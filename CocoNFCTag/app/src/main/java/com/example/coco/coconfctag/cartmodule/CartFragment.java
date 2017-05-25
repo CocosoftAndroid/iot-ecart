@@ -1,5 +1,6 @@
 package com.example.coco.coconfctag.cartmodule;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -9,6 +10,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,6 +31,7 @@ import com.example.coco.coconfctag.scanlistmodule.ProductItem;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
+import java.io.Serializable;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
@@ -51,6 +54,7 @@ public class CartFragment extends Fragment implements View.OnClickListener, Quan
     private Gson gson;
     private SharedPreferences.Editor prefsEditor;
     private DatabaseHandler mDB;
+    int _checkoutAmount =0;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -122,9 +126,31 @@ public class CartFragment extends Fragment implements View.OnClickListener, Quan
 
                 if (isloggedin) {
                     Toast.makeText(getContext(), "Processing Payment", Toast.LENGTH_SHORT).show();
+                    if(_checkoutAmount!=0)
+                    {
+                        Intent i=new Intent(CartFragment.this.getActivity(),BillingPage.class);
+                        i.putExtra("Checkout Amount",_checkoutAmount);
+                        Bundle args = new Bundle();
+                        args.putSerializable("ARRAYLIST",(Serializable)mCartArray);
+                        i.putExtra("BUNDLE",args);
+                        startActivity(i);
+
+                    }
+                    else
+                    {
+                        Toast.makeText(getContext(), "Sorry !! No items in your Cart to check out", Toast.LENGTH_SHORT).show();
+                    }
+
+
                 } else {
-                    openFrag(1, "");
+
+                    Log.i("CartFragment","User Not logged IN");
+
+                    //openFrag(1, "");
+                    openFrag(3,"");
+
                 }
+
                 break;
 
         }
@@ -157,11 +183,11 @@ public class CartFragment extends Fragment implements View.OnClickListener, Quan
     }
 
     private void calculateTotal() {
-        int total = 0;
+         _checkoutAmount  = 0;
         for (int i = 0; i < mCartArray.size(); i++) {
-            total = total + (mCartArray.get(i).getCount() * mCartArray.get(i).getProductPrice());
+            _checkoutAmount  = _checkoutAmount  + (mCartArray.get(i).getCount() * mCartArray.get(i).getProductPrice());
         }
-        mGrandTotalTxt.setText("Grand Total = $ " + total);
+        mGrandTotalTxt.setText("Grand Total = $ " + _checkoutAmount );
     }
 
     private void openFrag(int i, String productid) {

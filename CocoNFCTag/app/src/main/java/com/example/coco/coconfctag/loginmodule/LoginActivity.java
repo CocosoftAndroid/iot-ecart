@@ -2,6 +2,7 @@ package com.example.coco.coconfctag.loginmodule;
 
 import android.app.Activity;
 import android.app.PendingIntent;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -27,6 +28,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -37,6 +39,28 @@ import com.example.coco.coconfctag.cartmodule.CartItem;
 import com.example.coco.coconfctag.database.DatabaseHandler;
 import com.example.coco.coconfctag.scanlistmodule.ProductItem;
 import com.example.coco.coconfctag.wishlistmodule.WishListFragment;
+import com.facebook.AccessToken;
+import com.facebook.AccessTokenTracker;
+import com.facebook.CallbackManager;
+import com.facebook.FacebookCallback;
+import com.facebook.FacebookException;
+import com.facebook.FacebookSdk;
+import com.facebook.GraphRequest;
+import com.facebook.GraphResponse;
+import com.facebook.LoggingBehavior;
+import com.facebook.Profile;
+import com.facebook.appevents.AppEventsLogger;
+import com.facebook.login.LoginManager;
+import com.facebook.login.LoginResult;
+import com.google.android.gms.auth.api.Auth;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.auth.api.signin.GoogleSignInResult;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.OptionalPendingResult;
+import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.common.api.Status;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -50,7 +74,7 @@ import java.util.Arrays;
 import java.util.List;
 
 
-public class LoginActivity extends AppCompatActivity implements View.OnClickListener {
+public class LoginActivity extends AppCompatActivity implements View.OnClickListener,GoogleApiClient.OnConnectionFailedListener  {
 
     private SearchView mSearchView;
     private NavigationView mNavigationView;
@@ -70,6 +94,24 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private TextView mCountTxtView;
 
 
+
+    private TextView _usrName;
+    private RelativeLayout mSearchLayout;
+
+    String userName = "";
+    int Flag=0;
+
+    private SharedPreferences.Editor editor;
+    private GoogleApiClient mGoogleApiClient;
+    private ProgressDialog mProgressDialog;
+    private static final int RC_SIGN_IN = 9001;
+    GoogleSignInAccount acct;
+
+
+
+    private CallbackManager mCallbackManager;
+
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
 
@@ -79,11 +121,120 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        FacebookSdk.sdkInitialize(getApplicationContext());
+        AppEventsLogger.activateApp(this);
+
         setContentView(R.layout.activity_login);
 
         init();
         openFrag(0);
+
+
+
+        Profile fbProfile = Profile.getCurrentProfile();
+        AccessTokenTracker accessTokenTracker = new AccessTokenTracker() {
+            @Override
+            protected void onCurrentAccessTokenChanged(AccessToken oldAccessToken,
+                                                       AccessToken currentAccessToken) {
+                if (currentAccessToken == null) {
+                    Log.d(TAG, "onLogout catched");
+
+                }
+            }
+        };
+
+
+        mCallbackManager = CallbackManager.Factory.create();
+        LoginManager.getInstance().registerCallback(mCallbackManager,
+                new FacebookCallback<LoginResult>() {
+                    @Override
+                    public void onSuccess(LoginResult loginResults) {
+
+                        GraphRequest request = GraphRequest.newMeRequest(
+                                AccessToken.getCurrentAccessToken(),
+                                new GraphRequest.GraphJSONObjectCallback() {
+                                    @Override
+                                    public void onCompleted(JSONObject object, GraphResponse response) {
+                                        FacebookSdk.setIsDebugEnabled(true);
+                                        FacebookSdk.addLoggingBehavior(LoggingBehavior.INCLUDE_ACCESS_TOKENS);
+                                        Profile profile = Profile.getCurrentProfile();
+                                        Log.d("Anusha","FACEBOOK success");
+                                        if (profile != null) {
+
+                                            Log.d("Anusha","profile");
+                                            userName = profile.getName();
+
+                                            updateUI(true,userName);
+
+                                        }
+
+                                    }
+                                });
+
+                        request.executeAsync();
+                    }
+
+                    @Override
+                    public void onCancel() {
+
+                        Log.e("dd", "facebook login canceled");
+
+                    }
+
+                    @Override
+                    public void onError(FacebookException e) {
+
+                        Log.e("dd", "facebook login failed error");
+
+                    }
+
+                });
+
+        accessTokenTracker.startTracking();
+
+/*Login with Google*/
+        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestEmail()
+                .build();
+
+
+        mGoogleApiClient = new GoogleApiClient.Builder(this)
+                .enableAutoManage(this, this)
+                .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
+                .build();
+
     }
+
+
+
+
+    @Override
+    public void onStart() {
+        super.onStart();
+
+        OptionalPendingResult<GoogleSignInResult> opr = Auth.GoogleSignInApi.silentSignIn(mGoogleApiClient);
+        if (opr.isDone()) {
+
+            Log.d(TAG, "Got cached sign-in");
+            GoogleSignInResult result = opr.get();
+            Flag =1;
+            handleSignInResult(result);
+
+        } else {
+
+            showProgressDialog();
+            opr.setResultCallback(new ResultCallback<GoogleSignInResult>() {
+                @Override
+                public void onResult(GoogleSignInResult googleSignInResult) {
+                    hideProgressDialog();
+                    handleSignInResult(googleSignInResult);
+
+                }
+            });
+        }
+    }
+
 
     private void init() {
         context = this;
@@ -156,6 +307,10 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                         openFrag(1);
                         return true;
                     case R.id.menu_logout:
+                        _usrName.setText("");
+                        signOut();
+                        fb_logOut();
+                        _usrName.setText("");
                         appSharedPrefs.edit().putBoolean("isloggedin",false).commit();
                         return true;
                     default:
@@ -228,7 +383,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 firstFragment = new HomeFragment();
                 break;
             case 1:
-                firstFragment = new LoginFragment();
+                firstFragment = new SigninFragment();
                 break;
             case 2:
                 firstFragment = new CartFragment();
@@ -306,6 +461,114 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         saveTempData(mProductArray);
     }
 */
+@Override
+public void onActivityResult(int requestCode, int resultCode, Intent data) {
+    super.onActivityResult(requestCode, resultCode, data);
+    Log.d(TAG, "onActivityResult:" + requestCode + ":" + resultCode + ":" + data);
+    if (requestCode == RC_SIGN_IN) {
+        GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
+        handleSignInResult(result);
+    }
+    else
+    {
+        mCallbackManager.onActivityResult(requestCode, resultCode, data);
+
+    }
+
+
+}
+
+
+    private void handleSignInResult(GoogleSignInResult result) {
+        Log.d(TAG, "handleSignInResult:" + result.isSuccess());
+        if (result.isSuccess()) {
+
+            acct = result.getSignInAccount();
+
+            if(Flag ==0)
+                updateUI(true,acct.getDisplayName());
+
+        } else {
+
+            updateUI(false,null);
+        }
+    }
+
+    public void signIn() {
+        Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient);
+        startActivityForResult(signInIntent, RC_SIGN_IN);
+    }
+
+    @Override
+    public void onConnectionFailed(ConnectionResult connectionResult) {
+
+        Log.d(TAG, "onConnectionFailed:" + connectionResult);
+    }
+
+    private void showProgressDialog() {
+        if (mProgressDialog == null) {
+            mProgressDialog = new ProgressDialog(this);
+            mProgressDialog.setMessage(getString(R.string.loading));
+            mProgressDialog.setIndeterminate(true);
+        }
+
+        mProgressDialog.show();
+    }
+
+    private void hideProgressDialog() {
+        if (mProgressDialog != null && mProgressDialog.isShowing()) {
+            mProgressDialog.dismiss();
+        }
+    }
+
+    private void updateUI(boolean signedIn,String userName) {
+        if (signedIn) {
+
+            editor = getSharedPreferences("cocosoft", MODE_PRIVATE).edit();
+            editor.putBoolean("isloggedin", true);
+            editor.putString("username",userName );
+            editor.commit();
+            _usrName.setText("Hi "+userName);
+            mSearchLayout.setVisibility(View.VISIBLE);
+            getSupportFragmentManager().popBackStack();
+
+        } else {
+
+
+            // Toast.makeText(this,"User Not Signed IN",Toast.LENGTH_SHORT).show();
+
+        }
+    }
+
+
+    public void signOut() {
+
+        Auth.GoogleSignInApi.signOut(mGoogleApiClient).setResultCallback(
+                new ResultCallback<Status>() {
+                    @Override
+                    public void onResult(Status status) {
+                        // [START_EXCLUDE]
+                        updateUI(false,null);
+                        Flag =0;
+                        // [END_EXCLUDE]
+                    }
+                });
+    }
+
+
+
+    private void fb_logOut()
+    {
+
+        LoginManager.getInstance().logOut();
+
+    }
+
+    public void fb_login()
+    {
+        LoginManager.getInstance().logInWithReadPermissions(this, Arrays.asList("public_profile"));
+    }
+
 
 
     private void handleIntent(Intent intent) {

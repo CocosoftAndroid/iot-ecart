@@ -43,6 +43,17 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
     private RelativeLayout mSearchLayout;
 
 
+
+    public static int getValue() {
+        return value;
+    }
+
+    public static void setValue(int value) {
+        LoginFragment.value = value;
+    }
+
+    private static int value =0;
+
     @Override
     public void onResume() {
         super.onResume();

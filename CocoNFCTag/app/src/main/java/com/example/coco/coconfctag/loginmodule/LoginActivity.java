@@ -378,6 +378,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     }
 
     private void openFrag(int i) {
+        boolean isloggedin = appSharedPrefs.getBoolean("isloggedin", false);
         switch (i) {
             case 0:
                 firstFragment = new HomeFragment();
@@ -389,13 +390,18 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 firstFragment = new CartFragment();
                 break;
             case 3:
-                firstFragment = new EditProfileFragment();
+
+                if (isloggedin)
+                    firstFragment = new EditProfileFragment();
+                else
+                    Toast.makeText(getApplicationContext(), "Please login to continue", Toast.LENGTH_SHORT).show();
+
                 break;
             case 4:
                 firstFragment = new SettingsFragment();
                 break;
             case 5:
-                boolean isloggedin = appSharedPrefs.getBoolean("isloggedin", false);
+
                 if (isloggedin)
                     firstFragment = new WishListFragment();
                 else

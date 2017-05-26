@@ -35,23 +35,17 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
     private ImageView mSettingsImg;
     private SharedPreferences.Editor editor;
 
-
-
     private TextView mCountTxtView;
     private TextView mTitleTxtView;
     private ImageView mCartImg;
     private RelativeLayout mSearchLayout;
 
-
-
     public static int getValue() {
         return value;
     }
-
     public static void setValue(int value) {
         LoginFragment.value = value;
     }
-
     private static int value =0;
 
     @Override

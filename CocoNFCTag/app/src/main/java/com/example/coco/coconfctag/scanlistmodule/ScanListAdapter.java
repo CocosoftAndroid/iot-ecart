@@ -41,11 +41,11 @@ public class ScanListAdapter extends RecyclerView.Adapter<ScanListAdapter.MyView
     private Context context;
 
     public class MyViewHolders extends RecyclerView.ViewHolder {
+
         public TextView productName, productPrice, count;
         public ImageView plusBtn, minusBtn, indicatorImg;
-        public CheckBox favBtn,cartCheckbox;
+        public CheckBox favBtn, cartCheckbox;
         public CardView cardView;
-
 
         public MyViewHolders(View view) {
             super(view);
@@ -54,15 +54,13 @@ public class ScanListAdapter extends RecyclerView.Adapter<ScanListAdapter.MyView
             count = (TextView) view.findViewById(R.id.count_txt);
             plusBtn = (ImageView) view.findViewById(R.id.plus_btn);
             minusBtn = (ImageView) view.findViewById(R.id.minus_btn);
-//            removeBtn = (ImageView) view.findViewById(R.id.remove_btn);
+            //removeBtn = (ImageView) view.findViewById(R.id.remove_btn);
             favBtn = (CheckBox) view.findViewById(R.id.fav_btn);
             cartCheckbox = (CheckBox) view.findViewById(R.id.cart_chkbox);
             indicatorImg = (ImageView) view.findViewById(R.id.indicator);
             cardView = (CardView) view.findViewById(R.id.card_view);
-
         }
     }
-
 
     public ScanListAdapter(Context c, ArrayList<ProductItem> list, QuantityListener listener, WishlistListener wishlistLis, IndividualItemListener individualListener, CheckboxListener checkboxLis) {
         this.productList = list;
@@ -73,7 +71,7 @@ public class ScanListAdapter extends RecyclerView.Adapter<ScanListAdapter.MyView
         this.isloggedin = prefs.getBoolean("isloggedin", false);
         this.mDB = new DatabaseHandler(context);
         this.individualListener = individualListener;
-        this.checkboxListener=checkboxLis;
+        this.checkboxListener = checkboxLis;
     }
 
     public ScanListAdapter(Context c, ArrayList<ProductItem> list, QuantityListener listener, IndividualItemListener individualListener) {
@@ -84,13 +82,11 @@ public class ScanListAdapter extends RecyclerView.Adapter<ScanListAdapter.MyView
         this.isloggedin = prefs.getBoolean("isloggedin", false);
         this.mDB = new DatabaseHandler(context);
         this.individualListener = individualListener;
-
     }
 
     @Override
     public MyViewHolders onCreateViewHolder(ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.inflate_scanlist_item, parent, false);
-
         return new MyViewHolders(itemView);
     }
 
@@ -101,12 +97,9 @@ public class ScanListAdapter extends RecyclerView.Adapter<ScanListAdapter.MyView
             if (mDB.wishlistAlreadyAdded(username, productList.get(position).getProductId()))
                 holder.favBtn.setChecked(true);
         }
-        if(productList.get(position).isChecked())
-        {
+        if (productList.get(position).isChecked()) {
             holder.cartCheckbox.setChecked(true);
-        }
-        else
-        {
+        } else {
             holder.cartCheckbox.setChecked(false);
         }
         holder.productName.setText(productList.get(position).getProductId() + " - " + productList.get(position).getProductName());
@@ -125,8 +118,7 @@ public class ScanListAdapter extends RecyclerView.Adapter<ScanListAdapter.MyView
                     quantityListener.onQuantityChange(productList.get(position).getProductId(), -1);
             }
         });
-
-      /*  holder.removeBtn.setOnClickListener(new View.OnClickListener() {
+        /*  holder.removeBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 quantityListener.onQuantityChange(productList.get(position).getProductId(), 0);
@@ -136,11 +128,9 @@ public class ScanListAdapter extends RecyclerView.Adapter<ScanListAdapter.MyView
             case 1:
                 holder.indicatorImg.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_nfc));
                 break;
-
             case 2:
                 holder.indicatorImg.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_barcode));
                 break;
-
             case 3:
                 holder.indicatorImg.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_qrcode));
                 break;
@@ -148,15 +138,12 @@ public class ScanListAdapter extends RecyclerView.Adapter<ScanListAdapter.MyView
         holder.favBtn.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-
                 if (isloggedin) {
                     wishlistListener.onFavouriteClicked(productList.get(position).getProductId(), isChecked);
-
                 } else {
                     Toast.makeText(context, "Please login to continue", Toast.LENGTH_SHORT).show();
                     holder.favBtn.setChecked(false);
                 }
-
             }
         });
         holder.cardView.setOnClickListener(new View.OnClickListener() {
@@ -168,7 +155,7 @@ public class ScanListAdapter extends RecyclerView.Adapter<ScanListAdapter.MyView
         holder.cartCheckbox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                checkboxListener.onChecked(productList.get(position).getProductId(),isChecked);
+                checkboxListener.onChecked(productList.get(position).getProductId(), isChecked);
             }
         });
     }
@@ -177,4 +164,5 @@ public class ScanListAdapter extends RecyclerView.Adapter<ScanListAdapter.MyView
     public int getItemCount() {
         return productList.size();
     }
+
 }

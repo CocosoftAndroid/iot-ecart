@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -28,7 +29,7 @@ public class SignupFragment extends Fragment implements View.OnClickListener, Da
 
     private EditText mUserNameEdtTxt;
     private EditText mPwdEdtTxt;
-    private EditText mConfirmPwdEdtTxt;
+    private EditText mConfirmPwdEdtTxt,mEmailEdtText;
     private TextView mSignupTxt, mWarnTxt, mDOBTxt;
     private DatabaseHandler mDB;
 
@@ -59,6 +60,7 @@ public class SignupFragment extends Fragment implements View.OnClickListener, Da
     private void init(View v) {
         mUserNameEdtTxt = (EditText) v.findViewById(R.id.username_etxt);
         mPwdEdtTxt = (EditText) v.findViewById(R.id.pwd_etxt);
+        mEmailEdtText = (EditText) v.findViewById(R.id.email_txt);
         mConfirmPwdEdtTxt = (EditText) v.findViewById(R.id.confirm_pwd_etxt);
         mSignupTxt = (TextView) v.findViewById(R.id.finish_signup_txt);
         mWarnTxt = (TextView) v.findViewById(R.id.warning_txt);
@@ -102,7 +104,11 @@ public class SignupFragment extends Fragment implements View.OnClickListener, Da
         } else if (!(mPwdEdtTxt.getText().toString().trim().equals(mConfirmPwdEdtTxt.getText().toString().trim()))) {
             mWarnTxt.setVisibility(View.VISIBLE);
             mWarnTxt.setText("Passwords do not match ");
-        } else {
+        }else if (isValidEmail(mEmailEdtText.getText().toString())) {
+            mWarnTxt.setVisibility(View.VISIBLE);
+            mWarnTxt.setText("Passwords do not match ");
+        }
+        else {
             mDB.addUser(new UserItem("", mUserNameEdtTxt.getText().toString().trim(), mConfirmPwdEdtTxt.getText().toString().trim()));
             Toast.makeText(getContext(), "Account Created", Toast.LENGTH_SHORT).show();
             getActivity().getSupportFragmentManager().popBackStack();
@@ -112,5 +118,14 @@ public class SignupFragment extends Fragment implements View.OnClickListener, Da
     @Override
     public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
         mDOBTxt.setText("" + month + "-" + year);
+    }
+
+
+    public final static boolean isValidEmail(CharSequence target) {
+        if (TextUtils.isEmpty(target)) {
+            return false;
+        } else {
+            return android.util.Patterns.EMAIL_ADDRESS.matcher(target).matches();
+        }
     }
 }

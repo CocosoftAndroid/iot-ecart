@@ -146,8 +146,8 @@ public class CartFragment extends Fragment implements View.OnClickListener, Quan
 
                     Log.i("CartFragment","User Not logged IN");
 
-                    //openFrag(1, "");
-                    openFrag(3,"");
+                    openFrag(1, "");
+//                    openFrag(3,"");
 
                 }
 
@@ -155,8 +155,6 @@ public class CartFragment extends Fragment implements View.OnClickListener, Quan
 
         }
     }
-
-
 
     @Override
     public void onQuantityChange(String productid, int quantity) {

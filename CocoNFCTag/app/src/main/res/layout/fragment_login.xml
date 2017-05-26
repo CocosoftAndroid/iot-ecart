@@ -39,6 +39,7 @@
             android:layout_marginBottom="@dimen/dp20"
             android:layout_marginLeft="@dimen/dp28"
             android:layout_marginRight="@dimen/dp28"
+            android:singleLine="true"
             android:background="@drawable/ic_edit_txt_bg"
             android:drawableLeft="@drawable/ic_username"
             android:drawablePadding="@dimen/dp10"
@@ -57,6 +58,7 @@
             android:drawableLeft="@drawable/ic_password"
             android:drawablePadding="@dimen/dp10"
             android:hint="Password"
+            android:singleLine="true"
             android:inputType="textPassword"
             android:padding="@dimen/dp10" />
 

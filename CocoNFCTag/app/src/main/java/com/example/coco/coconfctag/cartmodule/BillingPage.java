@@ -52,21 +52,15 @@ public class BillingPage extends AppCompatActivity  {
     TextView _txtView;
     TextView _txtQt;
     TextView _txtViewamount;
-
     String status="";
     String JsonResponse = null;
     String returnCode =null;
     int checkoutAmount=0;
-
     String CardNumber;
     String ExpiratonDate;
     String CVV;
-
-
     Random ran = new Random();
     ArrayList<CartItem> itemDetails;
-
-
     private SharedPreferences prefs;
     private SharedPreferences.Editor prefsEditor;
 
@@ -77,22 +71,14 @@ public class BillingPage extends AppCompatActivity  {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_transaction);
 
-
-
-
        _cardNumber = (EditText)findViewById(R.id.creditCardNo);
         _month =(EditText)findViewById(R.id.mon);
         _year = (EditText)findViewById(R.id.year);
         _cardCode =(EditText) findViewById(R.id.cardCode);
-
         _amountDisplay = (TextView)findViewById(R.id.tranAmount);
-
         _txtView = (TextView)findViewById(R.id.txtView);
         _txtQt = (TextView)findViewById(R.id.txtViewQt);
         _txtViewamount =(TextView)findViewById(R.id.txtViewAmount);
-
-
-
         _pageTitle = (Toolbar)findViewById(R.id.transactionPage_toolBar);
         setSupportActionBar(_pageTitle);
         getSupportActionBar().setTitle("Payment Page");
@@ -233,7 +219,6 @@ public class BillingPage extends AppCompatActivity  {
     {
         JSONObject jPaymentDetails = storeDataInJson();
         String json = jPaymentDetails.toString();
-
         String statusOp;
         @Override
         protected String doInBackground(String... params) {
@@ -247,7 +232,6 @@ public class BillingPage extends AppCompatActivity  {
                 con.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
                 con.setRequestProperty("Accept", "application/json");
                 con.setRequestMethod("POST");
-
                 Writer writer = new BufferedWriter(new OutputStreamWriter(con.getOutputStream(), "UTF-8"));
                 writer.write(json);
                 Log.i("JSON String",json);

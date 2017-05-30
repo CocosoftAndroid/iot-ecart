@@ -15,38 +15,28 @@
 
         <android.support.design.widget.AppBarLayout
             android:layout_width="match_parent"
-            android:layout_height="78dp"
+            android:layout_height="wrap_content"
             android:theme="@style/AppTheme.AppBarOverlay">
 
             <android.support.v7.widget.Toolbar
                 android:id="@+id/transactionPage_toolBar"
                 android:layout_width="match_parent"
-                android:layout_height="44dp"
+                android:layout_height="?attr/actionBarSize"
                 android:background="?attr/colorPrimary"
                 app:popupTheme="@style/AppTheme.PopupOverlay" />
 
-            <LinearLayout
+
+            <TextView
+                android:id="@+id/title_txt"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:drawableLeft="@drawable/secure"
+                android:drawablePadding="@dimen/dp10"
+                android:padding="@dimen/dp5"
+                android:text="This is a secure and encrypted payment .You're safe"
+                android:textAppearance="?android:textAppearanceSmall"
+                android:textColor="@color/white" />
 
-                <ImageView
-                    android:id="@+id/imageView5"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:src="@drawable/secure" />
-
-                <TextView
-                    android:id="@+id/title_txt"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="This is a secure and encrypted payment .You're safe"
-                    android:textColor="@color/white"
-                    android:textSize="16dp" />
-
-
-            </LinearLayout>
 
         </android.support.design.widget.AppBarLayout>
 
@@ -55,58 +45,58 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="3dp"
             android:layout_marginLeft="8dp"
-            android:layout_marginRight="8dp"
+
             android:layout_marginTop="15dp"
             android:text="Item Details"
-            android:textColor="@color/cast_libraries_material_featurehighlight_outer_highlight_default_color"
-            android:textSize="16sp"
+            android:textAppearance="?android:textAppearanceSmall"
+            android:textColor="@color/colorPrimary"
             android:textStyle="bold" />
 
-        <ScrollView
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="120dp"
-            android:fillViewport="true"
-            android:scrollbars="vertical">
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/dp5"
+            android:orientation="horizontal"
+            android:weightSum="3">
 
-            <LinearLayout
-                android:layout_width="fill_parent"
-                android:layout_height="120dp"
-                android:layout_marginBottom="8dp"
-                android:layout_marginLeft="8dp"
-                android:layout_marginRight="8dp"
-                android:layout_marginTop="3dp"
-                android:background="@drawable/ic_edittxt"
-                android:orientation="horizontal"
-                android:weightSum="1">
+            <TextView
+                android:id="@+id/name"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:padding="@dimen/dp2"
+                android:text="Product Name"
+                android:textAppearance="?android:textAppearanceSmall"
+                android:textColor="@color/grey_15"
+                android:textStyle="bold" />
 
+            <TextView
+                android:id="@+id/quantity"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:padding="@dimen/dp2"
+                android:text="Quantity"
+                android:textAppearance="?android:textAppearanceSmall"
+                android:textColor="@color/grey_15"
+                android:textStyle="bold" />
 
-                <TextView
-                    android:id="@+id/txtView"
-                    android:layout_width="146dp"
-                    android:layout_height="match_parent"
+            <TextView
+                android:id="@+id/price"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:padding="@dimen/dp2"
+                android:text="Price"
+                android:textAppearance="?android:textAppearanceSmall"
+                android:textColor="@color/grey_15"
+                android:textStyle="bold" />
+        </LinearLayout>
 
-                    android:layout_weight="0.20"
-                    android:textColor="@color/cast_intro_overlay_button_background_color" />
-
-                <TextView
-                    android:id="@+id/txtViewQt"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_weight="0.38"
-
-                    android:textColor="@color/cast_intro_overlay_button_background_color" />
-
-                <TextView
-                    android:id="@+id/txtViewAmount"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_weight="0.38"
-
-                    android:textColor="@color/cast_intro_overlay_button_background_color" />
-
-
-            </LinearLayout>
-        </ScrollView>
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/billing_rview"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"></android.support.v7.widget.RecyclerView>
 
         <TextView
             android:id="@+id/tranAmount"
@@ -117,7 +107,6 @@
             android:textAlignment="center"
             android:textColor="@android:color/holo_blue_dark"
             android:textSize="16sp" />
-
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -131,6 +120,8 @@
                 android:layout_height="wrap_content"
                 android:layout_above="@+id/footer"
                 android:layout_alignParentTop="true"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp"
                 android:layout_marginTop="@dimen/dp20"
                 android:orientation="horizontal"
                 android:weightSum="1">
@@ -140,10 +131,10 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentLeft="true"
-                    android:layout_toLeftOf="@+id/imgLay"
                     android:layout_centerVertical="true"
+                    android:layout_toLeftOf="@+id/imgLay"
                     android:text="Credit Card (Visa or Master)"
-                    android:textSize="16sp"
+                    android:textAppearance="?android:textAppearanceSmall"
                     android:textStyle="bold" />
 
                 <LinearLayout
@@ -157,17 +148,18 @@
                         android:id="@+id/imageView3"
                         android:layout_width="63dp"
                         android:layout_height="43dp"
+                        android:scaleType="fitXY"
                         app:srcCompat="@drawable/mastercard" />
 
                     <ImageView
                         android:id="@+id/imageView7"
                         android:layout_width="63dp"
                         android:layout_height="43dp"
+                        android:scaleType="fitXY"
                         app:srcCompat="@drawable/visa_img" />
                 </LinearLayout>
 
             </RelativeLayout>
-
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -211,8 +203,8 @@
                     android:layout_marginTop="5dp"
                     android:background="@drawable/ic_edittxt"
                     android:ems="10"
-                    android:maxLength="16"
                     android:inputType="number"
+                    android:maxLength="16"
                     android:textColor="@color/cast_libraries_material_featurehighlight_outer_highlight_default_color"
                     android:textSize="18sp" />
 
@@ -257,14 +249,14 @@
                     android:layout_alignTop="@+id/mon"
                     android:layout_marginLeft="5dp"
                     android:layout_toEndOf="@+id/mon"
-                    android:inputType="number"
                     android:layout_toRightOf="@+id/mon"
                     android:background="@drawable/ic_edittxt"
                     android:ems="10"
-                    android:maxLength="4"
                     android:hint="YY"
+                    android:inputType="number"
+                    android:maxLength="4"
                     android:textAlignment="center"
-                    android:textColor="@color/cast_libraries_material_featurehighlight_outer_highlight_default_color"
+                    android:textColor="@color/black"
                     android:textSize="14sp" />
 
                 <EditText
@@ -276,22 +268,22 @@
                     android:layout_toRightOf="@+id/textView"
                     android:background="@drawable/ic_edittxt"
                     android:textAlignment="center"
-                    android:textColor="@color/cast_libraries_material_featurehighlight_outer_highlight_default_color"
+                    android:textColor="@color/black"
                     android:textSize="14sp" />
 
                 <EditText
                     android:id="@+id/mon"
                     android:layout_width="70dp"
                     android:layout_height="48dp"
-                    android:inputType="number"
                     android:layout_alignParentLeft="true"
                     android:layout_alignParentStart="true"
                     android:layout_below="@+id/textView"
                     android:layout_marginTop="14dp"
                     android:background="@drawable/ic_edittxt"
                     android:hint="Mon"
+                    android:inputType="number"
                     android:textAlignment="center"
-                    android:textColor="@color/cast_libraries_material_featurehighlight_outer_highlight_default_color"
+                    android:textColor="@color/black"
                     android:textSize="14sp" />
 
             </RelativeLayout>

@@ -7,6 +7,8 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
@@ -49,9 +51,7 @@ public class BillingPage extends AppCompatActivity  {
     Button _pay;
     Toolbar _pageTitle;
     TextView _amountDisplay;
-    TextView _txtView;
-    TextView _txtQt;
-    TextView _txtViewamount;
+
     String status="";
     String JsonResponse = null;
     String returnCode =null;
@@ -63,7 +63,9 @@ public class BillingPage extends AppCompatActivity  {
     ArrayList<CartItem> itemDetails;
     private SharedPreferences prefs;
     private SharedPreferences.Editor prefsEditor;
-
+    private LinearLayoutManager mLManager;
+    private RecyclerView mBillingRView;
+    private BillingAdapter mBillingAdapter;
 
 
     @Override
@@ -76,9 +78,7 @@ public class BillingPage extends AppCompatActivity  {
         _year = (EditText)findViewById(R.id.year);
         _cardCode =(EditText) findViewById(R.id.cardCode);
         _amountDisplay = (TextView)findViewById(R.id.tranAmount);
-        _txtView = (TextView)findViewById(R.id.txtView);
-        _txtQt = (TextView)findViewById(R.id.txtViewQt);
-        _txtViewamount =(TextView)findViewById(R.id.txtViewAmount);
+
         _pageTitle = (Toolbar)findViewById(R.id.transactionPage_toolBar);
         setSupportActionBar(_pageTitle);
         getSupportActionBar().setTitle("Payment Page");
@@ -89,35 +89,12 @@ public class BillingPage extends AppCompatActivity  {
         itemDetails = (ArrayList<CartItem>) args.getSerializable("ARRAYLIST");
 
         Log.i("Item Name",itemDetails.get(0).getProductName());
-
-        String textView = "Item Name\n";
-        textView = textView +"-----------------------------\n";
-        String textViewQuantity= "Quantity\n";
-        textViewQuantity = textViewQuantity + "-----------------\n";
-        String textViewAmount = "Price\n";
-        textViewAmount = textViewAmount +"---------------\n";
-
-
-
-         for(int j = 0;j<itemDetails.size();j++)
-         {
-             textView = textView + itemDetails.get(j).getProductName() + "\n";
-             textViewQuantity = textViewQuantity + itemDetails.get(j).getCount() +"\n";
-             textViewAmount = textViewAmount +"$"+itemDetails.get(j).getProductPrice() +"\n";
-
-         }
-
-
-
-        _txtView.setText(textView);
-        _txtQt.setText(textViewQuantity);
-        _txtViewamount.setText(textViewAmount);
-
-
-
-
+        mLManager = new LinearLayoutManager(this);
+        mBillingRView = (RecyclerView) findViewById(R.id.billing_rview);
+        mBillingRView.setLayoutManager(mLManager);
+        mBillingAdapter = new BillingAdapter(this, itemDetails);
+        mBillingRView.setAdapter(mBillingAdapter);
         _amountDisplay.setText("subtotal :                                  $"+String.valueOf(checkoutAmount));
-
         _pay =(Button)findViewById(R.id.pay);
 
 

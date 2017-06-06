@@ -92,13 +92,10 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private Gson gson;
     private ArrayList<CartItem> mCartArray = new ArrayList<>();
     private TextView mCountTxtView;
-
-    private TextView _usrName;
+//    private TextView _usrName;
     private RelativeLayout mSearchLayout;
-
     private String userName = "";
     private int Flag = 0;
-
     private SharedPreferences.Editor editor;
     private GoogleApiClient mGoogleApiClient;
     private ProgressDialog mProgressDialog;
@@ -273,10 +270,10 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                         openFrag(1);
                         return true;
                     case R.id.menu_logout:
-                        _usrName.setText("");
+//                        _usrName.setText("");
                         signOut();
                         fb_logOut();
-                        _usrName.setText("");
+//                        _usrName.setText("");
                         appSharedPrefs.edit().putBoolean("isloggedin", false).commit();
                         return true;
                     default:
@@ -301,16 +298,24 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 // Code here will be triggered once the drawer open as we dont want anything to happen so we leave this blank
                 super.onDrawerOpened(drawerView);
                 boolean isloggedin = appSharedPrefs.getBoolean("isloggedin", false);
+                String userType = appSharedPrefs.getString("usertype", "user");
                 Menu menu = mNavigationView.getMenu();
                 MenuItem loginitem = menu.findItem(R.id.menu_login);
                 MenuItem logoutitem = menu.findItem(R.id.menu_logout);
+                MenuItem nfcwriteritem = menu.findItem(R.id.menu_nfcwriter);
                 if (isloggedin) {
                     loginitem.setVisible(false);
                     logoutitem.setVisible(true);
+                    if (userType.equals("admin"))
+                        nfcwriteritem.setVisible(true);
+                    else
+                        nfcwriteritem.setVisible(false);
                 } else {
                     loginitem.setVisible(true);
                     logoutitem.setVisible(false);
+                    nfcwriteritem.setVisible(false);
                 }
+
             }
         };
         //Setting the actionbarToggle to drawer layout
@@ -343,6 +348,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
     private void openFrag(int i) {
         boolean isloggedin = appSharedPrefs.getBoolean("isloggedin", false);
+
         switch (i) {
             case 0:
                 firstFragment = new HomeFragment();
@@ -489,7 +495,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             editor.putBoolean("isloggedin", true);
             editor.putString("username", userName);
             editor.commit();
-            _usrName.setText("Hi " + userName);
+//            _usrName.setText("Hi " + userName);
             mSearchLayout.setVisibility(View.VISIBLE);
             getSupportFragmentManager().popBackStack();
         } else {

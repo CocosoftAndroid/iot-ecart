@@ -28,6 +28,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     private static final String TABLE_WISHLIST = "wishlisttable";
     private String USER_NAME = "username";
     private String USER_PASSWORD = "userpassword";
+    private String USER_TYPE = "usertype";
     private String ID = "id";
     private String PRODUCT_NAME = "productname";
     private String PRODUCT_ID = "productid";
@@ -43,7 +44,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         String CREATE_USER_TABLE = "CREATE TABLE " + TABLE_USER + "("
-                + ID + " INTEGER PRIMARY KEY AUTOINCREMENT," + USER_NAME + " TEXT," + USER_PASSWORD + " TEXT " + ")";
+                + ID + " INTEGER PRIMARY KEY AUTOINCREMENT," + USER_NAME + " TEXT," + USER_PASSWORD + " TEXT , " + USER_TYPE + " TEXT "+ ")";
         db.execSQL(CREATE_USER_TABLE);
 
         String CREATE_PRODUCT_TABLE = "CREATE TABLE " + TABLE_PRODUCT + "("
@@ -73,6 +74,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         ContentValues values = new ContentValues();
         values.put(USER_NAME, item.getUserName());
         values.put(USER_PASSWORD, item.getPassword());
+        values.put(USER_TYPE, item.getUserType());
         db.insert(TABLE_USER, null, values);
         db.close();
     }
@@ -100,6 +102,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 item.setId("" + cursor.getInt(0));
                 item.setUserName(cursor.getString(1));
                 item.setPassword(cursor.getString(2));
+                item.setUserType(cursor.getString(3));
                 list.add(item);
             } while (cursor.moveToNext());
         }
@@ -117,6 +120,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                     item.setId("" + cursor.getInt(0));
                     item.setUserName(cursor.getString(1));
                     item.setPassword(cursor.getString(2));
+                    item.setUserType(cursor.getString(3));
                     return item;
                 } while (cursor.moveToNext());
             }

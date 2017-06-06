@@ -2,6 +2,7 @@ package com.example.coco.coconfctag.loginmodule;
 
 import android.app.DatePickerDialog;
 import android.os.Bundle;
+import android.support.annotation.IdRes;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.Toolbar;
@@ -13,6 +14,7 @@ import android.view.ViewGroup;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -37,6 +39,8 @@ public class SignupFragment extends Fragment implements View.OnClickListener, Da
     private TextView mTitleTxtView;
     private ImageView mCartImg;
     private RelativeLayout mSearchLayout;
+    private String mUserType="user";
+    private RadioGroup mRadioGroup1;
 
     @Nullable
     @Override
@@ -50,6 +54,19 @@ public class SignupFragment extends Fragment implements View.OnClickListener, Da
     private void setListeners() {
         mSignupTxt.setOnClickListener(this);
         mDOBTxt.setOnClickListener(this);
+        mRadioGroup1.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup group, @IdRes int checkedId) {
+                if(checkedId==R.id.user_radio_btn)
+                {
+                    mUserType="user";
+                }
+                else if(checkedId==R.id.admin_radio_btn)
+                {
+                    mUserType="admin";
+                }
+            }
+        });
     }
 
     @Override
@@ -74,6 +91,7 @@ public class SignupFragment extends Fragment implements View.OnClickListener, Da
         mCartImg.setVisibility(View.GONE);
         mSearchLayout = (RelativeLayout) getActivity().findViewById(R.id.search_layout);
         mSearchLayout.setVisibility(View.GONE);
+        mRadioGroup1=(RadioGroup)v.findViewById(R.id.radioGroup1);
 
     }
 
@@ -109,7 +127,7 @@ public class SignupFragment extends Fragment implements View.OnClickListener, Da
             mWarnTxt.setText("Passwords do not match ");
         }
         else {
-            mDB.addUser(new UserItem("", mUserNameEdtTxt.getText().toString().trim(), mConfirmPwdEdtTxt.getText().toString().trim()));
+            mDB.addUser(new UserItem("", mUserNameEdtTxt.getText().toString().trim(), mConfirmPwdEdtTxt.getText().toString().trim(),mUserType));
             Toast.makeText(getContext(), "Account Created", Toast.LENGTH_SHORT).show();
             getActivity().getSupportFragmentManager().popBackStack();
         }

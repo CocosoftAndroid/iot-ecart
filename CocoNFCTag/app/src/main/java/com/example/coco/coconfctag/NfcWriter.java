@@ -19,10 +19,11 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.Spinner;
+
 import org.json.JSONException;
 import org.json.JSONObject;
-import java.util.ArrayList;
 
+import java.util.ArrayList;
 
 
 public class NfcWriter extends AppCompatActivity {
@@ -57,29 +58,29 @@ public class NfcWriter extends AppCompatActivity {
                 String productId = et1.getText().toString();
                 String productName = et2.getText().toString();
                 String productPrice = et3.getText().toString();
-                String content = "Product Id : "+ productId + "\n" +"Product Name : "+productName + "\n" +"Product Price : "+productPrice;
+                String content = "Product Id : " + productId + "\n" + "Product Name : " + productName + "\n" + "Product Price : " + productPrice;
                 // productDetails.add(content);
-                JSONObject jobj=new JSONObject();
+                JSONObject jobj = new JSONObject();
                 try {
-                    jobj.put("id",productId);
+                    jobj.put("id", productId);
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
                 switch (pos) {
                     case 0:
-                        message =  nfcMger.createUriMessage(content, "http://");
+                        message = nfcMger.createUriMessage(content, "http://");
                         break;
                     case 1:
-                        message =  nfcMger.createUriMessage(content, "tel:");
+                        message = nfcMger.createUriMessage(content, "tel:");
                         break;
                     case 2:
-                        message =  nfcMger.createTextMessage(jobj.toString());
+                        message = nfcMger.createTextMessage(jobj.toString());
                         break;
                 }
                 if (message != null) {
                     dialog = new ProgressDialog(NfcWriter.this);
                     dialog.setMessage("Tag NFC Tag please");
-                    dialog.show();;
+                    dialog.show();
                 }
             }
         });
@@ -115,19 +116,16 @@ public class NfcWriter extends AppCompatActivity {
             Intent nfcIntent = new Intent(this, getClass());
             nfcIntent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
             PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, nfcIntent, 0);
-            IntentFilter[] intentFiltersArray = new IntentFilter[] {};
-            String[][] techList = new String[][] { { android.nfc.tech.Ndef.class.getName() }, { android.nfc.tech.NdefFormatable.class.getName() } };
+            IntentFilter[] intentFiltersArray = new IntentFilter[]{};
+            String[][] techList = new String[][]{{android.nfc.tech.Ndef.class.getName()}, {android.nfc.tech.NdefFormatable.class.getName()}};
             NfcAdapter nfcAdpt = NfcAdapter.getDefaultAdapter(this);
             nfcAdpt.enableForegroundDispatch(this, pendingIntent, intentFiltersArray, techList);
-        }
-        catch(NFCManager.NFCNotSupported nfcnsup) {
+        } catch (NFCManager.NFCNotSupported nfcnsup) {
             Snackbar.make(v, "NFC not supported", Snackbar.LENGTH_LONG).show();
-        }
-        catch(NFCManager.NFCNotEnabled nfcnEn) {
+        } catch (NFCManager.NFCNotEnabled nfcnEn) {
             Snackbar.make(v, "NFC Not enabled", Snackbar.LENGTH_LONG).show();
         }
     }
-
 
     @Override
     protected void onPause() {
@@ -144,8 +142,7 @@ public class NfcWriter extends AppCompatActivity {
             nfcMger.writeTag(currentTag, message);
             dialog.dismiss();
             Snackbar.make(v, "Tag written", Snackbar.LENGTH_LONG).show();
-        }
-        else {
+        } else {
             // Handle intent
         }
     }

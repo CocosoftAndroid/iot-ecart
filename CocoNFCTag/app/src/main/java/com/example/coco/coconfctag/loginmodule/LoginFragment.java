@@ -117,6 +117,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
             editor = getContext().getSharedPreferences("cocosoft", MODE_PRIVATE).edit();
             editor.putBoolean("isloggedin", true);
             editor.putString("username", mUserNameEdtTxt.getText().toString().trim());
+            editor.putString("usertype",item.getUserType());
             editor.commit();
             Toast.makeText(getContext(), "Successfully Logged In", Toast.LENGTH_SHORT).show();
          /*   Intent i = new Intent(getContext(), MainActivity.class);

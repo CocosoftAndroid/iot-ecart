@@ -16,6 +16,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.coco.coconfctag.R;
+import com.example.coco.coconfctag.database.DatabaseHandler;
 import com.google.gson.Gson;
 
 import org.json.JSONArray;
@@ -70,6 +71,8 @@ public class BillingPage extends AppCompatActivity  {
     private SharedPreferences prefs;
     private SharedPreferences.Editor prefsEditor;
 
+    private DatabaseHandler mDB;
+    String refId;
 
 
     @Override
@@ -96,6 +99,8 @@ public class BillingPage extends AppCompatActivity  {
         _pageTitle = (Toolbar)findViewById(R.id.transactionPage_toolBar);
         setSupportActionBar(_pageTitle);
         getSupportActionBar().setTitle("Payment Page");
+
+        mDB = new DatabaseHandler(getApplicationContext());
 
         Intent i =getIntent();
         checkoutAmount = i.getIntExtra("Checkout Amount",0);
@@ -178,6 +183,7 @@ public class BillingPage extends AppCompatActivity  {
                                     if (status.contains("Successful.")) {
 
                                         Toast.makeText(getApplicationContext(), "Transaction Successful", Toast.LENGTH_SHORT).show();
+                                        storeOrderHistory();
                                         emptyCheckoutData();
                                         onPressGotoHomePage();
                                     }  if (status.contains("cardNumber") || status.contains("credit card number is invalid")) {
@@ -186,6 +192,10 @@ public class BillingPage extends AppCompatActivity  {
                                     } if(status.contains("Expiration")) {
                                         _month.setError("Invalid expiration date");
                                         _year.setError("Invalid Expiration Date");
+                                    }
+                                    if(status.contains("unsuccessful"))
+                                    {
+                                        Toast.makeText(getApplicationContext(), "Transaction UnSuccessful,Please try again", Toast.LENGTH_SHORT).show();
                                     }
 
                                 }
@@ -207,6 +217,16 @@ public class BillingPage extends AppCompatActivity  {
         });
 
     }
+    void storeOrderHistory()
+    {
+        prefs = getSharedPreferences("cocosoft", MODE_PRIVATE);
+        String username = prefs.getString("username", null);
+        Log.d("username is",username);
+        for(int i =0 ;i<itemDetails.size();i++)
+            mDB.insertEntry(refId,itemDetails.get(i).getProductId(),itemDetails.get(i).getProductName(),itemDetails.get(i).getProductPrice(),itemDetails.get(i).getCount(),
+                    String.valueOf(checkoutAmount),username);
+    }
+
     void onPressGotoHomePage()
     {
         Intent i = new Intent(BillingPage.this,com.example.coco.coconfctag.loginmodule.LoginActivity.class);
@@ -324,7 +344,7 @@ public class BillingPage extends AppCompatActivity  {
 
 
 
-        String refId =  String.valueOf((100000 + ran.nextInt(899999)));
+         refId =  String.valueOf((100000 + ran.nextInt(899999)));
 
         JSONObject jfinal = new JSONObject();
         JSONObject jkeys =new JSONObject();

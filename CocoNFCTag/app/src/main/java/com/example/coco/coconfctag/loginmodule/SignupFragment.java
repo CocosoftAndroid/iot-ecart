@@ -4,6 +4,8 @@ import android.app.DatePickerDialog;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -105,7 +107,18 @@ public class SignupFragment extends Fragment implements View.OnClickListener, Da
         } else {
             mDB.addUser(new UserItem("", mUserNameEdtTxt.getText().toString().trim(), mConfirmPwdEdtTxt.getText().toString().trim()));
             Toast.makeText(getContext(), "Account Created", Toast.LENGTH_SHORT).show();
-            getActivity().getSupportFragmentManager().popBackStack();
+           // getActivity().getSupportFragmentManager().popBackStack();
+
+            LoginFragment.setValue(3);
+
+            Fragment firstFragment = null;
+            firstFragment = new LoginFragment();
+            FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+            fragmentTransaction.setCustomAnimations(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
+            fragmentTransaction.replace(R.id.frame, firstFragment, "h");
+            fragmentTransaction.addToBackStack("h");
+            fragmentTransaction.commit();
         }
     }
 

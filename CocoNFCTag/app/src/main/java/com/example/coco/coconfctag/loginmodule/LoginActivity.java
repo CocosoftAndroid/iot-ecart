@@ -37,6 +37,7 @@ import com.example.coco.coconfctag.R;
 import com.example.coco.coconfctag.cartmodule.CartFragment;
 import com.example.coco.coconfctag.cartmodule.CartItem;
 import com.example.coco.coconfctag.database.DatabaseHandler;
+import com.example.coco.coconfctag.orderHistory.OrderHistory;
 import com.example.coco.coconfctag.scanlistmodule.ProductItem;
 import com.example.coco.coconfctag.wishlistmodule.WishListFragment;
 import com.facebook.AccessToken;
@@ -264,6 +265,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         mDB.addProduct(new ProductItem("505", "Hair Oil", 40, 1, 0, false));
         appSharedPrefs = getSharedPreferences("cocosoft", MODE_PRIVATE);
 
+        _usrName = (TextView)findViewById(R.id.userName);
+
 
     }
 
@@ -306,6 +309,9 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                     case R.id.menu_login:
                         openFrag(1);
                         return true;
+                    case R.id.menu_history:
+                        openFrag(6);
+                        return true;
                     case R.id.menu_logout:
                         _usrName.setText("");
                         signOut();
@@ -337,14 +343,18 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 boolean isloggedin = appSharedPrefs.getBoolean("isloggedin", false);
                 Menu menu = mNavigationView.getMenu();
                 MenuItem loginitem = menu.findItem(R.id.menu_login);
+                MenuItem orderHistory = menu.findItem(R.id.menu_history);
                 MenuItem logoutitem = menu.findItem(R.id.menu_logout);
                 if (isloggedin) {
                     loginitem.setVisible(false);
+                    orderHistory.setVisible(true);
+
                     logoutitem.setVisible(true);
                 }
                 else
                 {
                     loginitem.setVisible(true);
+                    orderHistory.setVisible(false);
                     logoutitem.setVisible(false);
                 }
             }
@@ -400,6 +410,11 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                     firstFragment = new WishListFragment();
                 else
                     Toast.makeText(getApplicationContext(), "Please login to continue", Toast.LENGTH_SHORT).show();
+                break;
+            case 6 :
+                boolean isusrloggedin = appSharedPrefs.getBoolean("isloggedin", false);
+                if(isusrloggedin)
+                    firstFragment = new OrderHistory();
                 break;
         }
         FragmentManager fragmentManager = getSupportFragmentManager();

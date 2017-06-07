@@ -127,7 +127,12 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
             Toast.makeText(getContext(), "Successfully Logged In", Toast.LENGTH_SHORT).show();
          /*   Intent i = new Intent(getContext(), MainActivity.class);
             startActivity(i);*/
-        getActivity().getSupportFragmentManager().popBackStack();
+            while(value > 0)
+            {
+                mSearchLayout.setVisibility(View.VISIBLE);
+                getActivity().getSupportFragmentManager().popBackStack();
+                value --;
+            }
         }
     }
 

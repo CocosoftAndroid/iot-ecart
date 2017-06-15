@@ -31,6 +31,7 @@
                 android:layout_marginBottom="@dimen/dp20"
                 android:layout_marginLeft="@dimen/dp32"
                android:maxLines="1"
+
                 android:layout_marginRight="@dimen/dp32"
                 android:background="@drawable/ic_edit_txt_bg"
                 android:drawableLeft="@drawable/ic_username"
@@ -47,6 +48,7 @@
                 android:layout_marginRight="@dimen/dp32"
                 android:background="@drawable/ic_edit_txt_bg"
                 android:maxLines="1"
+
                 android:drawableLeft="@drawable/ic_username"
                 android:drawablePadding="@dimen/dp10"
                 android:hint="Last Name"
@@ -189,7 +191,6 @@
                 android:drawableLeft="@drawable/ic_email"
                 android:drawablePadding="@dimen/dp10"
                 android:hint="Email"
-                android:inputType="textPassword"
                 android:padding="@dimen/dp10" />
 
             <EditText
@@ -212,6 +213,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/dp20"
                 android:layout_marginLeft="@dimen/dp32"
+                android:visibility="gone"
                 android:layout_marginRight="@dimen/dp32"
                 android:orientation="horizontal">
 

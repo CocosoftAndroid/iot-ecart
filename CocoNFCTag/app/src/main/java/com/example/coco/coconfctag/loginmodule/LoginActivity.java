@@ -34,10 +34,11 @@ import android.widget.Toast;
 
 import com.example.coco.coconfctag.NfcWriter;
 import com.example.coco.coconfctag.R;
+import com.example.coco.coconfctag.adminmodule.AllUsersFragment;
 import com.example.coco.coconfctag.cartmodule.CartFragment;
 import com.example.coco.coconfctag.cartmodule.CartItem;
 import com.example.coco.coconfctag.database.DatabaseHandler;
-import com.example.coco.coconfctag.orderHistory.OrderHistory;
+import com.example.coco.coconfctag.orderhistory.OrderHistory;
 import com.example.coco.coconfctag.scanlistmodule.ProductItem;
 import com.example.coco.coconfctag.wishlistmodule.WishListFragment;
 import com.facebook.AccessToken;
@@ -93,9 +94,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private Gson gson;
     private ArrayList<CartItem> mCartArray = new ArrayList<>();
     private TextView mCountTxtView;
-
-
-
     private TextView _usrName;
     private RelativeLayout mSearchLayout;
     private String userName = "";
@@ -257,11 +255,11 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                         openFrag(0);
                         return true;
                     // For rest of the options we just show a toast on click
-                    case R.id.menu_ordered:
-                        openFrag(2);
-                        return true;
                     case R.id.menu_favourite:
                         openFrag(5);
+                        return true;
+                    case R.id.menu_allusers:
+                        openFrag(7);
                         return true;
                     case R.id.menu_settings:
                         openFrag(4);
@@ -314,15 +312,20 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 MenuItem orderHistory = menu.findItem(R.id.menu_history);
                 MenuItem logoutitem = menu.findItem(R.id.menu_logout);
                 MenuItem nfcwriteritem = menu.findItem(R.id.menu_nfcwriter);
+                MenuItem allusersitem = menu.findItem(R.id.menu_allusers);
                 if (isloggedin) {
                     loginitem.setVisible(false);
                     orderHistory.setVisible(true);
 
                     logoutitem.setVisible(true);
-                    if (userType.equals("admin"))
+                    if (userType.equals("admin")) {
                         nfcwriteritem.setVisible(true);
-                    else
+                        allusersitem.setVisible(true);
+                    }
+                    else {
                         nfcwriteritem.setVisible(false);
+                        allusersitem.setVisible(false);
+                    }
                 } else {
                     loginitem.setVisible(true);
                     orderHistory.setVisible(false);
@@ -395,6 +398,10 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 boolean isusrloggedin = appSharedPrefs.getBoolean("isloggedin", false);
                 if(isusrloggedin)
                     firstFragment = new OrderHistory();
+                break;
+
+            case 7 :
+                    firstFragment = new AllUsersFragment();
                 break;
         }
         FragmentManager fragmentManager = getSupportFragmentManager();

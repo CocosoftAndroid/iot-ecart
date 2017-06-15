@@ -31,13 +31,10 @@ public class NFCManager {
     public void verifyNFC() throws NFCNotSupported, NFCNotEnabled {
 
         nfcAdpt = NfcAdapter.getDefaultAdapter(activity);
-
         if (nfcAdpt == null)
             throw new NFCNotSupported();
-
         if (!nfcAdpt.isEnabled())
             throw new NFCNotEnabled();
-
     }
 
     public void enableDispatch() {

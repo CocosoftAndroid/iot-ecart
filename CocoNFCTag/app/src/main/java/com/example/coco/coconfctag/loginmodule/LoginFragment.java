@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -19,10 +20,9 @@ import android.widget.Toast;
 
 import com.example.coco.coconfctag.R;
 import com.example.coco.coconfctag.database.DatabaseHandler;
-import com.example.coco.coconfctag.retrofit.APIInterface;
-import com.example.coco.coconfctag.retrofit.RetrofitAPIClient;
+import com.example.coco.coconfctag.network.APIInterface;
+import com.example.coco.coconfctag.network.RetrofitAPIClient;
 
-import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -48,6 +48,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
     private RelativeLayout mSearchLayout;
     private APIInterface apiInterface;
     private Call<User> response;
+    private CheckBox mAdminCheckbox;
 
     public static int getValue() {
         return value;
@@ -82,6 +83,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
 
     private void init(View v) {
         mSignupTxt = (TextView) v.findViewById(R.id.signup_txt);
+        mAdminCheckbox = (CheckBox) v.findViewById(R.id.checkbox_admin);
         mLoginTxt = (TextView) v.findViewById(R.id.login_txt);
         mUserNameEdtTxt = (EditText) v.findViewById(R.id.username_etxt);
         mPwdEdtTxt = (EditText) v.findViewById(R.id.pwd_etxt);
@@ -129,21 +131,24 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
             editor = getContext().getSharedPreferences("cocosoft", MODE_PRIVATE).edit();
             editor.putBoolean("isloggedin", true);
             editor.putString("username", mUserNameEdtTxt.getText().toString().trim());
-            editor.putString("usertype", item.getUserType());
+            if (mAdminCheckbox.isChecked())
+                editor.putString("usertype", "admin");
+            else
+                editor.putString("usertype", "user");
             editor.commit();
             Toast.makeText(getContext(), "Successfully Logged In", Toast.LENGTH_SHORT).show();
          /*   Intent i = new Intent(getContext(), MainActivity.class);
             startActivity(i);*/
-           response= apiInterface.getUser(1);
+            response = apiInterface.getUser(1);
             response.enqueue(new Callback<User>() {
                 @Override
                 public void onResponse(Call<User> call, Response<User> response) {
-                    Log.e("LoginFragment","="+response.body().toString());
+                    Log.e("LoginFragment", "=" + response.body().getEmail());
                 }
 
                 @Override
                 public void onFailure(Call<User> call, Throwable t) {
-                    Log.e("LoginFragment","="+t.getMessage());
+                    Log.e("LoginFragment", "=" + t.getMessage());
                 }
             });
             getActivity().getSupportFragmentManager().popBackStack();
@@ -159,7 +164,6 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
             case 1:
                 firstFragment = new SignupFragment();
                 break;
-
         }
         FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();

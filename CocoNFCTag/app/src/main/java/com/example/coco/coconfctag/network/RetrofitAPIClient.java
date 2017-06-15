@@ -1,4 +1,4 @@
-package com.example.coco.coconfctag.retrofit;
+package com.example.coco.coconfctag.network;
 
 import android.content.Context;
 

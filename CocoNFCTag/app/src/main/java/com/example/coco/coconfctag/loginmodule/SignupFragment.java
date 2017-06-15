@@ -22,6 +22,12 @@ import android.widget.Toast;
 import com.example.coco.coconfctag.R;
 import com.example.coco.coconfctag.common.MonthYearPickerDialog;
 import com.example.coco.coconfctag.database.DatabaseHandler;
+import com.example.coco.coconfctag.network.APIInterface;
+import com.example.coco.coconfctag.network.RetrofitAPIClient;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 /**
  * Created by cocoadmin on 3/16/2017.
@@ -31,16 +37,17 @@ public class SignupFragment extends Fragment implements View.OnClickListener, Da
 
     private EditText mUserNameEdtTxt;
     private EditText mPwdEdtTxt;
-    private EditText mConfirmPwdEdtTxt,mEmailEdtText;
+    private EditText mConfirmPwdEdtTxt,mEmailEdtText,mFirstNameETxt,mLastNameETxt;
     private TextView mSignupTxt, mWarnTxt, mDOBTxt;
     private DatabaseHandler mDB;
-
     private TextView mCountTxtView;
     private TextView mTitleTxtView;
     private ImageView mCartImg;
     private RelativeLayout mSearchLayout;
     private String mUserType="user";
     private RadioGroup mRadioGroup1;
+    private APIInterface apiInterface;
+    private Call<User> response;
 
     @Nullable
     @Override
@@ -78,6 +85,8 @@ public class SignupFragment extends Fragment implements View.OnClickListener, Da
         mUserNameEdtTxt = (EditText) v.findViewById(R.id.username_etxt);
         mPwdEdtTxt = (EditText) v.findViewById(R.id.pwd_etxt);
         mEmailEdtText = (EditText) v.findViewById(R.id.email_txt);
+        mFirstNameETxt = (EditText) v.findViewById(R.id.firstname_etxt);
+        mLastNameETxt = (EditText) v.findViewById(R.id.lastname_etxt);
         mConfirmPwdEdtTxt = (EditText) v.findViewById(R.id.confirm_pwd_etxt);
         mSignupTxt = (TextView) v.findViewById(R.id.finish_signup_txt);
         mWarnTxt = (TextView) v.findViewById(R.id.warning_txt);
@@ -92,6 +101,7 @@ public class SignupFragment extends Fragment implements View.OnClickListener, Da
         mSearchLayout = (RelativeLayout) getActivity().findViewById(R.id.search_layout);
         mSearchLayout.setVisibility(View.GONE);
         mRadioGroup1=(RadioGroup)v.findViewById(R.id.radioGroup1);
+        apiInterface = RetrofitAPIClient.getClient(getContext()).create(APIInterface.class);
 
     }
 
@@ -122,12 +132,26 @@ public class SignupFragment extends Fragment implements View.OnClickListener, Da
         } else if (!(mPwdEdtTxt.getText().toString().trim().equals(mConfirmPwdEdtTxt.getText().toString().trim()))) {
             mWarnTxt.setVisibility(View.VISIBLE);
             mWarnTxt.setText("Passwords do not match ");
-        }else if (isValidEmail(mEmailEdtText.getText().toString())) {
+        }else if (!(isValidEmail(mEmailEdtText.getText().toString()))) {
             mWarnTxt.setVisibility(View.VISIBLE);
-            mWarnTxt.setText("Passwords do not match ");
+            mWarnTxt.setText("Not a valid email ");
         }
         else {
             mDB.addUser(new UserItem("", mUserNameEdtTxt.getText().toString().trim(), mConfirmPwdEdtTxt.getText().toString().trim(),mUserType));
+            response = apiInterface.createUser(new User(0,mEmailEdtText.getText().toString().trim(),mPwdEdtTxt.getText().toString().trim(),mFirstNameETxt.getText().toString().trim(),mLastNameETxt.getText().toString().trim(),"","","","","","",""));
+            response.enqueue(new Callback<User>() {
+                @Override
+                public void onResponse(Call<User> call, Response<User> response) {
+                    Log.e("LoginFragment", "=" + response.body().getEmail());
+                }
+
+                @Override
+                public void onFailure(Call<User> call, Throwable t) {
+                    Log.e("LoginFragment", "=" + t.getMessage());
+                }
+            });
+            getActivity().getSupportFragmentManager().popBackStack();
+
             Toast.makeText(getContext(), "Account Created", Toast.LENGTH_SHORT).show();
             getActivity().getSupportFragmentManager().popBackStack();
         }

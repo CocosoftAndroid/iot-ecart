@@ -1,4 +1,4 @@
-package com.example.coco.coconfctag.orderHistory;
+package com.example.coco.coconfctag.orderhistory;
 
 import android.content.Context;
 import android.database.Cursor;

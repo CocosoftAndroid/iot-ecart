@@ -61,7 +61,7 @@ public class EditProfileFragment extends Fragment {
         mCountTxtView.setVisibility(View.GONE);
         mCartImg.setVisibility(View.GONE);
         mSearchLayout.setVisibility(View.GONE);
-        mTitleTxtView.setText("Edit Profile");
+        mTitleTxtView.setText("Profile");
         gson=new Gson();
         saveProfileData();
 

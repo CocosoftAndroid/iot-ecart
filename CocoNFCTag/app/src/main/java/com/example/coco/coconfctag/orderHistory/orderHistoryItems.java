@@ -1,4 +1,4 @@
-package com.example.coco.coconfctag.orderHistory;
+package com.example.coco.coconfctag.orderhistory;
 
 /**
  * Created by Guest1 on 5/24/2017.

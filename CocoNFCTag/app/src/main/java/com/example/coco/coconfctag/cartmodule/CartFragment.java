@@ -17,7 +17,6 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.example.coco.coconfctag.R;
 import com.example.coco.coconfctag.database.DatabaseHandler;
 import com.example.coco.coconfctag.listeners.CheckboxListener;
@@ -26,16 +25,13 @@ import com.example.coco.coconfctag.listeners.QuantityListener;
 import com.example.coco.coconfctag.listeners.WishlistListener;
 import com.example.coco.coconfctag.loginmodule.IndividualItemFragment;
 import com.example.coco.coconfctag.loginmodule.LoginFragment;
-import com.example.coco.coconfctag.scanlistmodule.ScanListAdapter;
 import com.example.coco.coconfctag.scanlistmodule.ProductItem;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-
 import java.io.Serializable;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
-
 import static android.content.Context.MODE_PRIVATE;
 
 public class CartFragment extends Fragment implements View.OnClickListener, QuantityListener, WishlistListener, IndividualItemListener, CheckboxListener {
@@ -68,7 +64,6 @@ public class CartFragment extends Fragment implements View.OnClickListener, Quan
         if(arr!=null) {
             mCartArray = gson.fromJson(tempdata, type);
         }
-
     }
 
     @Nullable
@@ -112,10 +107,8 @@ public class CartFragment extends Fragment implements View.OnClickListener, Quan
         mCartImg = (ImageView) toolbar.findViewById(R.id.cart_img);
         mCountTxtView.setVisibility(View.GONE);
         mCartImg.setVisibility(View.GONE);
-
         calculateTotal();
     }
-
 
     @Override
     public void onClick(View v) {
@@ -123,7 +116,6 @@ public class CartFragment extends Fragment implements View.OnClickListener, Quan
         String username = prefs.getString("username", "");
         switch (v.getId()) {
             case R.id.add_cart_txt:
-
                 if (isloggedin) {
                     Toast.makeText(getContext(), "Processing Payment", Toast.LENGTH_SHORT).show();
                     if(_checkoutAmount!=0)
@@ -134,23 +126,18 @@ public class CartFragment extends Fragment implements View.OnClickListener, Quan
                         args.putSerializable("ARRAYLIST",(Serializable)mCartArray);
                         i.putExtra("BUNDLE",args);
                         startActivity(i);
-
                     }
                     else
                     {
                         Toast.makeText(getContext(), "Sorry !! No items in your Cart to check out", Toast.LENGTH_SHORT).show();
                     }
-
-
-                } else {
-
+                } else
+                    {
                     Log.i("CartFragment","User Not logged IN");
-
                     openFrag(1, "");
 //                    openFrag(3,"");
 
                 }
-
                 break;
 
         }
@@ -201,7 +188,6 @@ public class CartFragment extends Fragment implements View.OnClickListener, Quan
                 bundles.putParcelable("item", item);
                 firstFragment.setArguments(bundles);
                 break;
-
         }
         FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();

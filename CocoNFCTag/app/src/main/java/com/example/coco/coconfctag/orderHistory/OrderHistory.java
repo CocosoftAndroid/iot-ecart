@@ -1,4 +1,4 @@
-package com.example.coco.coconfctag.orderHistory;
+package com.example.coco.coconfctag.orderhistory;
 
 import android.content.SharedPreferences;
 import android.database.Cursor;
@@ -42,10 +42,10 @@ public class OrderHistory extends Fragment implements View.OnClickListener {
     private TextView _noOfOrders;
     private ListView _lView;
 
-    private SharedPreferences prefs ;
+    private SharedPreferences prefs;
 
     DatabaseHandler mDb;
-    int noOfOrders =0;
+    int noOfOrders = 0;
     ArrayList<orderHistoryItems> orderItems = new ArrayList<orderHistoryItems>();
     ArrayList<orderedProducts> productInfo = new ArrayList<orderedProducts>();
 
@@ -67,60 +67,58 @@ public class OrderHistory extends Fragment implements View.OnClickListener {
     @Override
     public void onResume() {
         super.onResume();
-        mTitleTxtView.setText("ORDER HISTORY");
+        mTitleTxtView.setText("Orders");
     }
-    private void setListeners()
-    {
+
+    private void setListeners() {
 
     }
 
-   private void init (View v)
-    {
+    private void init(View v) {
         Toolbar toolbar = (Toolbar) getActivity().findViewById(R.id.toolbar);
         mCountTxtView = (TextView) toolbar.findViewById(R.id.total_count);
         mTitleTxtView = (TextView) toolbar.findViewById(R.id.title_txt);
         mCartImg = (ImageView) toolbar.findViewById(R.id.cart_img);
         mDb = new DatabaseHandler(getContext());
-        _noOfOrders = (TextView)v.findViewById(R.id.monOrderCnt);
+        _noOfOrders = (TextView) v.findViewById(R.id.monOrderCnt);
         displayHistory();
         mLManager = new LinearLayoutManager(getContext());
         mProductRView = (RecyclerView) v.findViewById(R.id.rview);
 
         mProductRView.setLayoutManager(mLManager);
-        mHistoryAdapter = new orderHistoryAdaptor(getContext(),orderItems );
+        mHistoryAdapter = new orderHistoryAdaptor(getContext(), orderItems);
         mProductRView.setAdapter(mHistoryAdapter);
 
 
     }
-    private void displayHistory()
-    {
+
+    private void displayHistory() {
         prefs = getContext().getSharedPreferences("cocosoft", MODE_PRIVATE);
-        String username = prefs.getString("username",null);
-        Log.d("username is",username);
-        Cursor c1 =mDb.getOrderNumbers(username);
+        String username = prefs.getString("username", null);
+        Log.d("username is", username);
+        Cursor c1 = mDb.getOrderNumbers(username);
 
-        int i=c1.getCount();
-        Log.e("ORDER_REFNO count",String.valueOf(i));
-
-
-            while (c1.moveToNext()) {
+        int i = c1.getCount();
+        Log.e("ORDER_REFNO count", String.valueOf(i));
 
 
-                Log.d("Order Number", c1.getString(c1.getColumnIndex(mDb.ORDER_REFNO)));
-                Log.d("Order date", c1.getString(c1.getColumnIndex(mDb.ENTRYDATE)));
-                Log.d("Order total"+ c1.getString(c1.getColumnIndex(mDb.ORDER_TOTAL_AMOUNT)),"");
+        while (c1.moveToNext()) {
 
-                orderItems.add(new orderHistoryItems(c1.getString(c1.getColumnIndex(mDb.ORDER_REFNO)),
-                        c1.getString(c1.getColumnIndex(mDb.ENTRYDATE)), c1.getString(c1.getColumnIndex(mDb.ORDER_TOTAL_AMOUNT))
-                ));
-                noOfOrders++;
-            }
 
-        if(noOfOrders == 0)
+            Log.d("Order Number", c1.getString(c1.getColumnIndex(mDb.ORDER_REFNO)));
+            Log.d("Order date", c1.getString(c1.getColumnIndex(mDb.ENTRYDATE)));
+            Log.d("Order total" + c1.getString(c1.getColumnIndex(mDb.ORDER_TOTAL_AMOUNT)), "");
+
+            orderItems.add(new orderHistoryItems(c1.getString(c1.getColumnIndex(mDb.ORDER_REFNO)),
+                    c1.getString(c1.getColumnIndex(mDb.ENTRYDATE)), c1.getString(c1.getColumnIndex(mDb.ORDER_TOTAL_AMOUNT))
+            ));
+            noOfOrders++;
+        }
+
+        if (noOfOrders == 0)
             _noOfOrders.setText("You have not placed any orders");
         else
-            _noOfOrders.setText("You have placed "+noOfOrders +" orders");
-
+            _noOfOrders.setText("You have placed " + noOfOrders + " orders");
 
 
     }

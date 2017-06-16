@@ -156,18 +156,13 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
                     @Override
                     public void onCancel() {
-
                         Log.e("dd", "facebook login canceled");
-
                     }
 
                     @Override
                     public void onError(FacebookException e) {
-
                         Log.e("dd", "facebook login failed error");
-
                     }
-
                 });
 
         accessTokenTracker.startTracking();
@@ -197,7 +192,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 public void onResult(GoogleSignInResult googleSignInResult) {
                     hideProgressDialog();
                     handleSignInResult(googleSignInResult);
-
                 }
             });
         }
@@ -230,7 +224,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         mDB.addProduct(new ProductItem("505", "Hair Oil", 40, 1, 0, false));
         appSharedPrefs = getSharedPreferences("cocosoft", MODE_PRIVATE);
 
-        _usrName = (TextView)findViewById(R.id.userName);
+        _usrName = (TextView) findViewById(R.id.userName);
 
 
     }
@@ -274,6 +268,9 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                     case R.id.menu_login:
                         openFrag(1);
                         return true;
+                    case R.id.menu_updateprofile:
+                        openFrag(8);
+                        return true;
                     case R.id.menu_history:
                         openFrag(6);
                         return true;
@@ -282,7 +279,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                         signOut();
                         fb_logOut();
                         _usrName.setText("");
-                        appSharedPrefs.edit().putBoolean("isloggedin",false).commit();
+                        appSharedPrefs.edit().putBoolean("isloggedin", false).commit();
                         return true;
                     default:
                         return true;
@@ -309,6 +306,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 String userType = appSharedPrefs.getString("usertype", "user");
                 Menu menu = mNavigationView.getMenu();
                 MenuItem loginitem = menu.findItem(R.id.menu_login);
+                MenuItem updateprofile = menu.findItem(R.id.menu_updateprofile);
                 MenuItem orderHistory = menu.findItem(R.id.menu_history);
                 MenuItem logoutitem = menu.findItem(R.id.menu_logout);
                 MenuItem nfcwriteritem = menu.findItem(R.id.menu_nfcwriter);
@@ -316,13 +314,12 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 if (isloggedin) {
                     loginitem.setVisible(false);
                     orderHistory.setVisible(true);
-
                     logoutitem.setVisible(true);
+                    updateprofile.setVisible(true);
                     if (userType.equals("admin")) {
                         nfcwriteritem.setVisible(true);
                         allusersitem.setVisible(true);
-                    }
-                    else {
+                    } else {
                         nfcwriteritem.setVisible(false);
                         allusersitem.setVisible(false);
                     }
@@ -331,6 +328,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                     orderHistory.setVisible(false);
                     logoutitem.setVisible(false);
                     nfcwriteritem.setVisible(false);
+                    updateprofile.setVisible(false);
                 }
 
             }
@@ -394,14 +392,17 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 else
                     Toast.makeText(getApplicationContext(), "Please login to continue", Toast.LENGTH_SHORT).show();
                 break;
-            case 6 :
+            case 6:
                 boolean isusrloggedin = appSharedPrefs.getBoolean("isloggedin", false);
-                if(isusrloggedin)
+                if (isusrloggedin)
                     firstFragment = new OrderHistory();
                 break;
 
-            case 7 :
-                    firstFragment = new AllUsersFragment();
+            case 7:
+                firstFragment = new AllUsersFragment();
+                break;
+            case 8:
+                firstFragment = new ProfileFragment();
                 break;
         }
         FragmentManager fragmentManager = getSupportFragmentManager();
@@ -521,7 +522,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             editor.putBoolean("isloggedin", true);
             editor.putString("username", userName);
             editor.commit();
-            _usrName.setText("Hi "+userName);
+            _usrName.setText("Hi " + userName);
             mSearchLayout.setVisibility(View.VISIBLE);
             getSupportFragmentManager().popBackStack();
         } else {

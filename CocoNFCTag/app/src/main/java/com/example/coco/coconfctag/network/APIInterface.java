@@ -11,6 +11,7 @@ import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
+import retrofit2.http.PUT;
 import retrofit2.http.Path;
 
 public interface APIInterface {
@@ -26,4 +27,7 @@ public interface APIInterface {
 
     @GET("Users/")
     Call<ArrayList<User>> getAllUsers();
+
+    @PUT("Users/{user_id}/")
+    Call<Void> updateUser(@Path(value = "user_id", encoded = true) int userId,@Body User user);
 }

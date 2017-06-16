@@ -143,7 +143,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
             response.enqueue(new Callback<User>() {
                 @Override
                 public void onResponse(Call<User> call, Response<User> response) {
-                    Log.e("LoginFragment", "=" + response.body().getEmail());
+
                 }
 
                 @Override

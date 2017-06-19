@@ -19,7 +19,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:padding="@dimen/dp20"
-                android:text="EASY SHOPPING CART"
+                android:text="ECART"
                 android:textAppearance="?android:textAppearanceLarge"
                 android:textColor="@color/colorPrimary"
                 android:textStyle="bold" />

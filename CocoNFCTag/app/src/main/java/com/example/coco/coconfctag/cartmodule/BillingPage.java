@@ -18,9 +18,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.coco.coconfctag.R;
-import com.example.coco.coconfctag.loginmodule.EditProfileFragment;
 import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -33,11 +31,9 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
-import java.lang.reflect.Type;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Random;
 import java.util.concurrent.ExecutionException;
 
@@ -70,9 +66,6 @@ public class BillingPage extends AppCompatActivity  {
     private LinearLayoutManager mLManager;
     private RecyclerView mBillingRView;
     private BillingAdapter mBillingAdapter;
-    private Gson gson;
-    private ArrayList<EditProfileFragment.AddressItem> mAddressArray;
-    private TextView mShippingAddrTxt;
 
 
     @Override
@@ -85,7 +78,6 @@ public class BillingPage extends AppCompatActivity  {
         _year = (EditText)findViewById(R.id.year);
         _cardCode =(EditText) findViewById(R.id.cardCode);
         _amountDisplay = (TextView)findViewById(R.id.tranAmount);
-        mShippingAddrTxt = (TextView)findViewById(R.id.shipping_addr_txt);
 
         _pageTitle = (Toolbar)findViewById(R.id.transactionPage_toolBar);
         setSupportActionBar(_pageTitle);
@@ -104,20 +96,6 @@ public class BillingPage extends AppCompatActivity  {
         mBillingRView.setAdapter(mBillingAdapter);
         _amountDisplay.setText("subtotal :                                  $"+String.valueOf(checkoutAmount));
         _pay =(Button)findViewById(R.id.pay);
-
-        prefs = getSharedPreferences("cocosoft", MODE_PRIVATE);
-
-        gson=new Gson();
-
-        String username = prefs.getString("username", null);
-        String tempdata = prefs.getString("profiledataof"+username, null);
-        Type type = new TypeToken<List<EditProfileFragment.AddressItem>>() {}.getType();
-        ArrayList<EditProfileFragment.AddressItem> arr=gson.fromJson(tempdata, type);
-        if(arr!=null) {
-            mAddressArray = gson.fromJson(tempdata, type);
-            Log.e("Address","="+mAddressArray.get(0).getName());
-            mShippingAddrTxt.setText(mAddressArray.get(0).toString());
-        }
 
 
 

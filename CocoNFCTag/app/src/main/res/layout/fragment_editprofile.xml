@@ -26,7 +26,6 @@
             android:textColor="@color/colorPrimary" />
 
         <EditText
-            android:id="@+id/cname_txt"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="top"
@@ -46,7 +45,6 @@
             android:textColor="@color/colorPrimary" />
 
         <EditText
-            android:id="@+id/caddr1_txt"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="top"
@@ -66,7 +64,6 @@
             android:textColor="@color/colorPrimary" />
 
         <EditText
-            android:id="@+id/caddr2_txt"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="top"
@@ -86,7 +83,6 @@
             android:textColor="@color/colorPrimary" />
 
         <EditText
-            android:id="@+id/ccity_txt"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="top"
@@ -106,7 +102,6 @@
             android:textColor="@color/colorPrimary" />
 
         <EditText
-            android:id="@+id/cstate_txt"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="top"
@@ -126,7 +121,6 @@
             android:textColor="@color/colorPrimary" />
 
         <EditText
-            android:id="@+id/czip_txt"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="top"
@@ -146,7 +140,6 @@
             android:textColor="@color/colorPrimary" />
 
         <EditText
-            android:id="@+id/ccountry_txt"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="top"
@@ -166,7 +159,6 @@
             android:textColor="@color/colorPrimary" />
 
         <EditText
-            android:id="@+id/cphno_txt"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="top"
@@ -178,7 +170,6 @@
             android:padding="@dimen/dp15" />
 
         <android.support.v7.widget.AppCompatCheckBox
-            android:id="@+id/checkbox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
@@ -197,7 +188,6 @@
             android:textAppearance="?android:textAppearanceLarge"
             android:textColor="@color/colorPrimary" />
         <TextView
-
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/dp15"
@@ -207,7 +197,6 @@
             android:textColor="@color/colorPrimary" />
 
         <EditText
-            android:id="@+id/ship_adr_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="top"
@@ -227,7 +216,6 @@
             android:textColor="@color/colorPrimary" />
 
         <EditText
-            android:id="@+id/ship_adr_address1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="top"
@@ -247,7 +235,6 @@
             android:textColor="@color/colorPrimary" />
 
         <EditText
-            android:id="@+id/ship_adr_address2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="top"
@@ -267,7 +254,6 @@
             android:textColor="@color/colorPrimary" />
 
         <EditText
-            android:id="@+id/ship_adr_city"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="top"
@@ -287,7 +273,6 @@
             android:textColor="@color/colorPrimary" />
 
         <EditText
-            android:id="@+id/ship_adr_state"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="top"
@@ -307,7 +292,6 @@
             android:textColor="@color/colorPrimary" />
 
         <EditText
-            android:id="@+id/ship_adr_zip"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="top"
@@ -327,7 +311,6 @@
             android:textColor="@color/colorPrimary" />
 
         <EditText
-            android:id="@+id/ship_adr_country"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="top"
@@ -347,7 +330,6 @@
             android:textColor="@color/colorPrimary" />
 
         <EditText
-            android:id="@+id/ship_adr_phoneno"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="top"
@@ -359,7 +341,6 @@
             android:padding="@dimen/dp15" />
 
         <TextView
-            android:id="@+id/save_txt"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_gravity="center"

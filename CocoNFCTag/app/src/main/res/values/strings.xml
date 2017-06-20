@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">ECart</string>
+    <string name="app_name">IOT NFC</string>
     <string name="explanation">NFC Tag Monitor Device</string>
     <string name="tabexplanation">Tap Device With NFC Tag</string>
     <string name="tabsubhead">Display NFC Tag Reader Data </string>

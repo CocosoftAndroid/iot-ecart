@@ -34,9 +34,11 @@ import android.widget.Toast;
 
 import com.example.coco.coconfctag.NfcWriter;
 import com.example.coco.coconfctag.R;
+import com.example.coco.coconfctag.adminmodule.AllUsersFragment;
 import com.example.coco.coconfctag.cartmodule.CartFragment;
 import com.example.coco.coconfctag.cartmodule.CartItem;
 import com.example.coco.coconfctag.database.DatabaseHandler;
+import com.example.coco.coconfctag.orderhistory.OrderHistory;
 import com.example.coco.coconfctag.scanlistmodule.ProductItem;
 import com.example.coco.coconfctag.wishlistmodule.WishListFragment;
 import com.facebook.AccessToken;
@@ -74,7 +76,7 @@ import java.util.Arrays;
 import java.util.List;
 
 
-public class LoginActivity extends AppCompatActivity implements View.OnClickListener,GoogleApiClient.OnConnectionFailedListener  {
+public class LoginActivity extends AppCompatActivity implements View.OnClickListener, GoogleApiClient.OnConnectionFailedListener {
 
     private SearchView mSearchView;
     private NavigationView mNavigationView;
@@ -90,25 +92,17 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private Fragment firstFragment = null;
     private SharedPreferences appSharedPrefs;
     private Gson gson;
-    private ArrayList<CartItem> mCartArray=new ArrayList<>();
+    private ArrayList<CartItem> mCartArray = new ArrayList<>();
     private TextView mCountTxtView;
-
-
-
     private TextView _usrName;
     private RelativeLayout mSearchLayout;
-
-    String userName = "";
-    int Flag=0;
-
+    private String userName = "";
+    private int Flag = 0;
     private SharedPreferences.Editor editor;
     private GoogleApiClient mGoogleApiClient;
     private ProgressDialog mProgressDialog;
     private static final int RC_SIGN_IN = 9001;
-    GoogleSignInAccount acct;
-
-
-
+    private GoogleSignInAccount acct;
     private CallbackManager mCallbackManager;
 
 
@@ -121,17 +115,11 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         FacebookSdk.sdkInitialize(getApplicationContext());
         AppEventsLogger.activateApp(this);
-
         setContentView(R.layout.activity_login);
-
         init();
         openFrag(0);
-
-
-
         Profile fbProfile = Profile.getCurrentProfile();
         AccessTokenTracker accessTokenTracker = new AccessTokenTracker() {
             @Override
@@ -139,18 +127,14 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                                                        AccessToken currentAccessToken) {
                 if (currentAccessToken == null) {
                     Log.d(TAG, "onLogout catched");
-
                 }
             }
         };
-
-
         mCallbackManager = CallbackManager.Factory.create();
         LoginManager.getInstance().registerCallback(mCallbackManager,
                 new FacebookCallback<LoginResult>() {
                     @Override
                     public void onSuccess(LoginResult loginResults) {
-
                         GraphRequest request = GraphRequest.newMeRequest(
                                 AccessToken.getCurrentAccessToken(),
                                 new GraphRequest.GraphJSONObjectCallback() {
@@ -159,86 +143,62 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                                         FacebookSdk.setIsDebugEnabled(true);
                                         FacebookSdk.addLoggingBehavior(LoggingBehavior.INCLUDE_ACCESS_TOKENS);
                                         Profile profile = Profile.getCurrentProfile();
-                                        Log.d("Anusha","FACEBOOK success");
+                                        Log.d("Anusha", "FACEBOOK success");
                                         if (profile != null) {
-
-                                            Log.d("Anusha","profile");
+                                            Log.d("Anusha", "profile");
                                             userName = profile.getName();
-
-                                            updateUI(true,userName);
-
+                                            updateUI(true, userName);
                                         }
-
                                     }
                                 });
-
                         request.executeAsync();
                     }
 
                     @Override
                     public void onCancel() {
-
                         Log.e("dd", "facebook login canceled");
-
                     }
 
                     @Override
                     public void onError(FacebookException e) {
-
                         Log.e("dd", "facebook login failed error");
-
                     }
-
                 });
 
         accessTokenTracker.startTracking();
-
-/*Login with Google*/
+        /*Login with Google*/
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestEmail()
                 .build();
-
-
         mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .enableAutoManage(this, this)
                 .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
                 .build();
-
     }
-
-
-
 
     @Override
     public void onStart() {
         super.onStart();
-
         OptionalPendingResult<GoogleSignInResult> opr = Auth.GoogleSignInApi.silentSignIn(mGoogleApiClient);
         if (opr.isDone()) {
-
             Log.d(TAG, "Got cached sign-in");
             GoogleSignInResult result = opr.get();
-            Flag =1;
+            Flag = 1;
             handleSignInResult(result);
-
         } else {
-
             showProgressDialog();
             opr.setResultCallback(new ResultCallback<GoogleSignInResult>() {
                 @Override
                 public void onResult(GoogleSignInResult googleSignInResult) {
                     hideProgressDialog();
                     handleSignInResult(googleSignInResult);
-
                 }
             });
         }
     }
 
-
     private void init() {
         context = this;
-
         mSearchView = (SearchView) findViewById(R.id.search_view);
         mSearchView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -250,7 +210,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer);
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
         mCartImg = (ImageView) findViewById(R.id.cart_img);
-        mCountTxtView = (TextView)findViewById(R.id.total_count);
+        mCountTxtView = (TextView) findViewById(R.id.total_count);
         mCartImg.setOnClickListener(this);
         setSupportActionBar(mToolbar);
         mNfcAdapter = NfcAdapter.getDefaultAdapter(this);
@@ -263,6 +223,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         mDB.addProduct(new ProductItem("504", "Fog Perfume", 50, 1, 0, false));
         mDB.addProduct(new ProductItem("505", "Hair Oil", 40, 1, 0, false));
         appSharedPrefs = getSharedPreferences("cocosoft", MODE_PRIVATE);
+
+        _usrName = (TextView) findViewById(R.id.userName);
 
 
     }
@@ -287,11 +249,11 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                         openFrag(0);
                         return true;
                     // For rest of the options we just show a toast on click
-                    case R.id.menu_ordered:
-                        openFrag(2);
-                        return true;
                     case R.id.menu_favourite:
                         openFrag(5);
+                        return true;
+                    case R.id.menu_allusers:
+                        openFrag(7);
                         return true;
                     case R.id.menu_settings:
                         openFrag(4);
@@ -306,12 +268,18 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                     case R.id.menu_login:
                         openFrag(1);
                         return true;
+                    case R.id.menu_updateprofile:
+                        openFrag(8);
+                        return true;
+                    case R.id.menu_history:
+                        openFrag(6);
+                        return true;
                     case R.id.menu_logout:
                         _usrName.setText("");
                         signOut();
                         fb_logOut();
                         _usrName.setText("");
-                        appSharedPrefs.edit().putBoolean("isloggedin",false).commit();
+                        appSharedPrefs.edit().putBoolean("isloggedin", false).commit();
                         return true;
                     default:
                         return true;
@@ -335,18 +303,34 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 // Code here will be triggered once the drawer open as we dont want anything to happen so we leave this blank
                 super.onDrawerOpened(drawerView);
                 boolean isloggedin = appSharedPrefs.getBoolean("isloggedin", false);
+                String userType = appSharedPrefs.getString("usertype", "user");
                 Menu menu = mNavigationView.getMenu();
                 MenuItem loginitem = menu.findItem(R.id.menu_login);
+                MenuItem updateprofile = menu.findItem(R.id.menu_updateprofile);
+                MenuItem orderHistory = menu.findItem(R.id.menu_history);
                 MenuItem logoutitem = menu.findItem(R.id.menu_logout);
+                MenuItem nfcwriteritem = menu.findItem(R.id.menu_nfcwriter);
+                MenuItem allusersitem = menu.findItem(R.id.menu_allusers);
                 if (isloggedin) {
                     loginitem.setVisible(false);
+                    orderHistory.setVisible(true);
                     logoutitem.setVisible(true);
-                }
-                else
-                {
+                    updateprofile.setVisible(true);
+                    if (userType.equals("admin")) {
+                        nfcwriteritem.setVisible(true);
+                        allusersitem.setVisible(true);
+                    } else {
+                        nfcwriteritem.setVisible(false);
+                        allusersitem.setVisible(false);
+                    }
+                } else {
                     loginitem.setVisible(true);
+                    orderHistory.setVisible(false);
                     logoutitem.setVisible(false);
+                    nfcwriteritem.setVisible(false);
+                    updateprofile.setVisible(false);
                 }
+
             }
         };
         //Setting the actionbarToggle to drawer layout
@@ -365,7 +349,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                     mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
                 }*/
 
-               changeCount();
+                changeCount();
             }
         });
         mActionBarDrawerToggle.setToolbarNavigationClickListener(new View.OnClickListener() {
@@ -378,6 +362,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     }
 
     private void openFrag(int i) {
+        boolean isloggedin = appSharedPrefs.getBoolean("isloggedin", false);
+
         switch (i) {
             case 0:
                 firstFragment = new HomeFragment();
@@ -389,17 +375,34 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 firstFragment = new CartFragment();
                 break;
             case 3:
-                firstFragment = new EditProfileFragment();
+
+                if (isloggedin)
+                    firstFragment = new EditProfileFragment();
+                else
+                    Toast.makeText(getApplicationContext(), "Please login to continue", Toast.LENGTH_SHORT).show();
+
                 break;
             case 4:
                 firstFragment = new SettingsFragment();
                 break;
             case 5:
-                boolean isloggedin = appSharedPrefs.getBoolean("isloggedin", false);
+
                 if (isloggedin)
                     firstFragment = new WishListFragment();
                 else
                     Toast.makeText(getApplicationContext(), "Please login to continue", Toast.LENGTH_SHORT).show();
+                break;
+            case 6:
+                boolean isusrloggedin = appSharedPrefs.getBoolean("isloggedin", false);
+                if (isusrloggedin)
+                    firstFragment = new OrderHistory();
+                break;
+
+            case 7:
+                firstFragment = new AllUsersFragment();
+                break;
+            case 8:
+                firstFragment = new ProfileFragment();
                 break;
         }
         FragmentManager fragmentManager = getSupportFragmentManager();
@@ -453,44 +456,37 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         prefsEditor.commit();
     }*/
 
-/*
+    /*
 
+        @Override
+        public void onScanResult(JSONObject obj, int scantype) {
+
+            saveTempData(mProductArray);
+        }
+    */
     @Override
-    public void onScanResult(JSONObject obj, int scantype) {
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        Log.d(TAG, "onActivityResult:" + requestCode + ":" + resultCode + ":" + data);
+        if (requestCode == RC_SIGN_IN) {
+            GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
+            handleSignInResult(result);
+        } else {
+            mCallbackManager.onActivityResult(requestCode, resultCode, data);
 
-        saveTempData(mProductArray);
-    }
-*/
-@Override
-public void onActivityResult(int requestCode, int resultCode, Intent data) {
-    super.onActivityResult(requestCode, resultCode, data);
-    Log.d(TAG, "onActivityResult:" + requestCode + ":" + resultCode + ":" + data);
-    if (requestCode == RC_SIGN_IN) {
-        GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
-        handleSignInResult(result);
-    }
-    else
-    {
-        mCallbackManager.onActivityResult(requestCode, resultCode, data);
+        }
+
 
     }
-
-
-}
-
 
     private void handleSignInResult(GoogleSignInResult result) {
         Log.d(TAG, "handleSignInResult:" + result.isSuccess());
         if (result.isSuccess()) {
-
             acct = result.getSignInAccount();
-
-            if(Flag ==0)
-                updateUI(true,acct.getDisplayName());
-
+            if (Flag == 0)
+                updateUI(true, acct.getDisplayName());
         } else {
-
-            updateUI(false,null);
+            updateUI(false, null);
         }
     }
 
@@ -511,7 +507,6 @@ public void onActivityResult(int requestCode, int resultCode, Intent data) {
             mProgressDialog.setMessage(getString(R.string.loading));
             mProgressDialog.setIndeterminate(true);
         }
-
         mProgressDialog.show();
     }
 
@@ -521,55 +516,41 @@ public void onActivityResult(int requestCode, int resultCode, Intent data) {
         }
     }
 
-    private void updateUI(boolean signedIn,String userName) {
+    private void updateUI(boolean signedIn, String userName) {
         if (signedIn) {
-
             editor = getSharedPreferences("cocosoft", MODE_PRIVATE).edit();
             editor.putBoolean("isloggedin", true);
-            editor.putString("username",userName );
+            editor.putString("username", userName);
             editor.commit();
-            _usrName.setText("Hi "+userName);
+            _usrName.setText("Hi " + userName);
             mSearchLayout.setVisibility(View.VISIBLE);
             getSupportFragmentManager().popBackStack();
-
         } else {
-
-
             // Toast.makeText(this,"User Not Signed IN",Toast.LENGTH_SHORT).show();
-
         }
     }
 
-
     public void signOut() {
-
         Auth.GoogleSignInApi.signOut(mGoogleApiClient).setResultCallback(
                 new ResultCallback<Status>() {
                     @Override
                     public void onResult(Status status) {
                         // [START_EXCLUDE]
-                        updateUI(false,null);
-                        Flag =0;
+                        updateUI(false, null);
+                        Flag = 0;
                         // [END_EXCLUDE]
                     }
                 });
     }
 
 
-
-    private void fb_logOut()
-    {
-
+    private void fb_logOut() {
         LoginManager.getInstance().logOut();
-
     }
 
-    public void fb_login()
-    {
+    public void fb_login() {
         LoginManager.getInstance().logInWithReadPermissions(this, Arrays.asList("public_profile"));
     }
-
-
 
     private void handleIntent(Intent intent) {
         String action = intent.getAction();
@@ -604,21 +585,21 @@ public void onActivityResult(int requestCode, int resultCode, Intent data) {
          */
         if (mNfcAdapter != null)
             setupForegroundDispatch(this, mNfcAdapter);
-
         changeCount();
     }
 
     private void changeCount() {
-        int mCount=0;
-        gson=new Gson();
+        int mCount = 0;
+        gson = new Gson();
         String tempdata = appSharedPrefs.getString("tempcartlist", null);
-        Type type = new TypeToken<List<CartItem>>() {}.getType();
-        ArrayList<CartItem> arr=gson.fromJson(tempdata, type);
-        if(arr!=null) {
+        Type type = new TypeToken<List<CartItem>>() {
+        }.getType();
+        ArrayList<CartItem> arr = gson.fromJson(tempdata, type);
+        if (arr != null) {
             mCartArray = gson.fromJson(tempdata, type);
         }
         for (int i = 0; i < mCartArray.size(); i++) {
-            if (mCartArray.get(i).getCount()>0) {
+            if (mCartArray.get(i).getCount() > 0) {
                 {
                     mCount = mCount + mCartArray.get(i).getCount();
                 }
@@ -647,7 +628,6 @@ public void onActivityResult(int requestCode, int resultCode, Intent data) {
          * In our case this method gets called, when the user attaches a Tag to the device.
          */
         handleIntent(intent);
-
     }
 
     /**
@@ -655,7 +635,6 @@ public void onActivityResult(int requestCode, int resultCode, Intent data) {
      * @param adapter  The {@link NfcAdapter} used for the foreground dispatch.
      */
     public static void setupForegroundDispatch(final Activity activity, NfcAdapter adapter) {
-
         final Intent intent = new Intent(activity.getApplicationContext(), activity.getClass());
         intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
         final PendingIntent pendingIntent = PendingIntent.getActivity(activity.getApplicationContext(), 0, intent, 0);
@@ -725,18 +704,13 @@ public void onActivityResult(int requestCode, int resultCode, Intent data) {
          * bit_6 reserved for future use, must be 0
          * bit_5..0 length of IANA language code
          */
-
             byte[] payload = record.getPayload();
-
             // Get the Text Encoding
             String textEncoding = ((payload[0] & 128) == 0) ? "UTF-8" : "UTF-16";
-
             // Get the Language Code
             int languageCodeLength = payload[0] & 0063;
-
             // String languageCode = new String(payload, 1, languageCodeLength, "US-ASCII");
             // e.g. "en"
-
             // Get the Text
             return new String(payload, languageCodeLength + 1, payload.length - languageCodeLength - 1, textEncoding);
         }
@@ -744,12 +718,10 @@ public void onActivityResult(int requestCode, int resultCode, Intent data) {
         @Override
         protected void onPostExecute(String result) {
             if (result != null) {
-
                 Log.e(TAG, "==" + result);
                 try {
                     if (firstFragment != null)
                         ((HomeFragment) firstFragment).openScanListFrag(new JSONObject(result), 1);
-
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }

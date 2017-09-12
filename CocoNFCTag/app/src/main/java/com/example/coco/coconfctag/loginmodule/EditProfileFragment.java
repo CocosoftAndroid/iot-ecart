@@ -1,4 +1,5 @@
 package com.example.coco.coconfctag.loginmodule;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -11,6 +12,11 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.example.coco.coconfctag.R;
+import com.google.gson.Gson;
+
+import java.util.ArrayList;
+
+import static android.content.Context.MODE_PRIVATE;
 
 /**
  * Created by cocoadmin on 4/13/2017.
@@ -22,6 +28,17 @@ public class EditProfileFragment extends Fragment {
     private TextView mTitleTxtView;
     private ImageView mCartImg;
     private RelativeLayout mSearchLayout;
+    private SharedPreferences prefs;
+    private SharedPreferences.Editor prefsEditor;
+    private Gson gson;
+    private ArrayList<AddressItem> mAddressArray=new ArrayList<>();
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        prefs = getContext().getSharedPreferences("cocosoft", MODE_PRIVATE);
+        prefsEditor = prefs.edit();
+    }
 
     @Nullable
     @Override
@@ -44,6 +61,41 @@ public class EditProfileFragment extends Fragment {
         mCountTxtView.setVisibility(View.GONE);
         mCartImg.setVisibility(View.GONE);
         mSearchLayout.setVisibility(View.GONE);
-        mTitleTxtView.setText("Edit Profile");
+        mTitleTxtView.setText("Profile");
+        gson=new Gson();
+        saveProfileData();
+
+    }
+
+    private void saveProfileData() {
+        String username = prefs.getString("username", null);
+        mAddressArray.add(new AddressItem("Arun","8,Xavior Street,Teynampet","Chennai","Chennai","TamilNadu","600006","India","917654564646"));
+        mAddressArray.add(new AddressItem("Arun","8,Xavior Street,Teynampet","Chennai","Chennai","TamilNadu","600006","India","917654564646"));
+        String json = gson.toJson(mAddressArray);
+        prefsEditor.putString("profiledataof"+username, json);
+        prefsEditor.commit();
+    }
+
+    class AddressItem
+    {
+        private String name="";
+        private String address1="";
+        private String address2="";
+        private String city="";
+        private String state="";
+        private String zip="";
+        private String country="";
+        private String phonenumber="";
+
+        public AddressItem(String name, String address1, String address2, String city, String state, String zip, String country, String phonenumber) {
+            this.name = name;
+            this.address1 = address1;
+            this.address2 = address2;
+            this.city = city;
+            this.state = state;
+            this.zip = zip;
+            this.country = country;
+            this.phonenumber = phonenumber;
+        }
     }
 }

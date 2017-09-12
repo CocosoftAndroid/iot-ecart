@@ -1,5 +1,9 @@
 package com.example.coco.coconfctag.loginmodule;
 
+/**
+ * Created by cocoadmin on 6/16/2017.
+ */
+
 import android.app.DatePickerDialog;
 import android.os.Bundle;
 import android.support.annotation.IdRes;
@@ -33,7 +37,7 @@ import retrofit2.Response;
  * Created by cocoadmin on 3/16/2017.
  */
 
-public class SignupFragment extends Fragment implements View.OnClickListener, DatePickerDialog.OnDateSetListener {
+public class ProfileFragment extends Fragment implements View.OnClickListener, DatePickerDialog.OnDateSetListener {
 
     private EditText mUserNameEdtTxt;
     private EditText mPwdEdtTxt;
@@ -47,12 +51,12 @@ public class SignupFragment extends Fragment implements View.OnClickListener, Da
     private String mUserType="user";
     private RadioGroup mRadioGroup1;
     private APIInterface apiInterface;
-    private Call<User> response;
+    private Call<Void> response;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.fragment_signup, container, false);
+        View v = inflater.inflate(R.layout.fragment_profile, container, false);
         init(v);
         setListeners();
         return v;
@@ -88,7 +92,7 @@ public class SignupFragment extends Fragment implements View.OnClickListener, Da
         mFirstNameETxt = (EditText) v.findViewById(R.id.firstname_etxt);
         mLastNameETxt = (EditText) v.findViewById(R.id.lastname_etxt);
         mConfirmPwdEdtTxt = (EditText) v.findViewById(R.id.confirm_pwd_etxt);
-        mSignupTxt = (TextView) v.findViewById(R.id.finish_signup_txt);
+        mSignupTxt = (TextView) v.findViewById(R.id.save_txt);
         mWarnTxt = (TextView) v.findViewById(R.id.warning_txt);
         mDOBTxt = (TextView) v.findViewById(R.id.dob_txt);
         mDB = new DatabaseHandler(getContext());
@@ -108,8 +112,8 @@ public class SignupFragment extends Fragment implements View.OnClickListener, Da
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.finish_signup_txt:
-                doSignup();
+            case R.id.save_txt:
+                updateProfile();
                 break;
             case R.id.dob_txt:
                 MonthYearPickerDialog pd = new MonthYearPickerDialog();
@@ -119,42 +123,24 @@ public class SignupFragment extends Fragment implements View.OnClickListener, Da
         }
     }
 
-    private void doSignup() {
-        if (mUserNameEdtTxt.getText().toString().trim().length() == 0) {
-            mWarnTxt.setVisibility(View.VISIBLE);
-            mWarnTxt.setText("Please enter a valid Username");
-        } else if (mDB.getUserItem(mUserNameEdtTxt.getText().toString().trim()) != null) {
-            mWarnTxt.setVisibility(View.VISIBLE);
-            mWarnTxt.setText("This username not available");
-        } else if (mPwdEdtTxt.getText().toString().trim().length() == 0 || mConfirmPwdEdtTxt.getText().toString().trim().length() == 0) {
-            mWarnTxt.setVisibility(View.VISIBLE);
-            mWarnTxt.setText("Please enter a valid Password");
-        } else if (!(mPwdEdtTxt.getText().toString().trim().equals(mConfirmPwdEdtTxt.getText().toString().trim()))) {
-            mWarnTxt.setVisibility(View.VISIBLE);
-            mWarnTxt.setText("Passwords do not match ");
-        }else if (!(isValidEmail(mEmailEdtText.getText().toString()))) {
-            mWarnTxt.setVisibility(View.VISIBLE);
-            mWarnTxt.setText("Not a valid email ");
-        }
-        else {
-            mDB.addUser(new UserItem("", mUserNameEdtTxt.getText().toString().trim(), mConfirmPwdEdtTxt.getText().toString().trim(),mUserType));
-            response = apiInterface.createUser(new User(0,mEmailEdtText.getText().toString().trim(),mPwdEdtTxt.getText().toString().trim(),mFirstNameETxt.getText().toString().trim(),mLastNameETxt.getText().toString().trim(),"","","","","","",""));
-            response.enqueue(new Callback<User>() {
+    private void updateProfile() {
+         response = apiInterface.updateUser(2,new User(2,mEmailEdtText.getText().toString().trim(),mPwdEdtTxt.getText().toString().trim(),mFirstNameETxt.getText().toString().trim(),mLastNameETxt.getText().toString().trim(),"","","","","","",""));
+            response.enqueue(new Callback() {
                 @Override
-                public void onResponse(Call<User> call, Response<User> response) {
-                    Log.e("LoginFragment", "=" + response.body().getEmail());
+                public void onResponse(Call call, Response response) {
+Log.e("Profile","="+response.message());
                 }
 
                 @Override
-                public void onFailure(Call<User> call, Throwable t) {
-                    Log.e("LoginFragment", "=" + t.getMessage());
+                public void onFailure(Call call, Throwable t) {
+                    Log.e("Profile","t="+t.getMessage());
                 }
             });
-            getActivity().getSupportFragmentManager().popBackStack();
 
-            Toast.makeText(getContext(), "Account Created", Toast.LENGTH_SHORT).show();
-            getActivity().getSupportFragmentManager().popBackStack();
-        }
+
+            Toast.makeText(getContext(), "Profile Updated", Toast.LENGTH_SHORT).show();
+
+
     }
 
     @Override

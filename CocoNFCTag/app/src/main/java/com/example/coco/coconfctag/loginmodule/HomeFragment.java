@@ -90,7 +90,6 @@ public class HomeFragment extends Fragment implements View.OnClickListener, Quan
         mLLayout3.setOnClickListener(this);
     }
 
-
     private void init(View v) {
         mLLayout1 = (LinearLayout) v.findViewById(R.id.llay1);
         mLLayout2 = (LinearLayout) v.findViewById(R.id.llay2);
@@ -152,12 +151,10 @@ public class HomeFragment extends Fragment implements View.OnClickListener, Quan
         fragmentTransaction.commit();
     }
 
-
     public void openScanListFrag(JSONObject jsonObject, int flag) {
         onScanResult(jsonObject, flag);
         openFrag(1, false);
     }
-
 
     @Override
     public void onQuantityChange(String productid, int quantity) {

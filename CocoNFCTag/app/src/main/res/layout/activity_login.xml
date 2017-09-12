@@ -27,6 +27,15 @@
                 app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
                 app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
 
+
+                <TextView
+                                    android:id="@+id/userName"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:textAppearance="?android:textAppearanceMedium"
+                                    android:textColor="@color/white"
+                                    />
+
                 <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"

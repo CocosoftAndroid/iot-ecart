@@ -7,9 +7,11 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -18,6 +20,12 @@ import android.widget.Toast;
 
 import com.example.coco.coconfctag.R;
 import com.example.coco.coconfctag.database.DatabaseHandler;
+import com.example.coco.coconfctag.network.APIInterface;
+import com.example.coco.coconfctag.network.RetrofitAPIClient;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 import static android.content.Context.MODE_PRIVATE;
 
@@ -34,15 +42,13 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
     private TextView mWarnTxt;
     private ImageView mSettingsImg;
     private SharedPreferences.Editor editor;
-
-
-
     private TextView mCountTxtView;
     private TextView mTitleTxtView;
     private ImageView mCartImg;
     private RelativeLayout mSearchLayout;
-
-
+    private APIInterface apiInterface;
+    private Call<User> response;
+    private CheckBox mAdminCheckbox;
 
     public static int getValue() {
         return value;
@@ -52,7 +58,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
         LoginFragment.value = value;
     }
 
-    private static int value =0;
+    private static int value = 0;
 
     @Override
     public void onResume() {
@@ -77,6 +83,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
 
     private void init(View v) {
         mSignupTxt = (TextView) v.findViewById(R.id.signup_txt);
+        mAdminCheckbox = (CheckBox) v.findViewById(R.id.checkbox_admin);
         mLoginTxt = (TextView) v.findViewById(R.id.login_txt);
         mUserNameEdtTxt = (EditText) v.findViewById(R.id.username_etxt);
         mPwdEdtTxt = (EditText) v.findViewById(R.id.pwd_etxt);
@@ -91,6 +98,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
         mCartImg.setVisibility(View.GONE);
         mSearchLayout = (RelativeLayout) getActivity().findViewById(R.id.search_layout);
         mSearchLayout.setVisibility(View.GONE);
+        apiInterface = RetrofitAPIClient.getClient(getContext()).create(APIInterface.class);
     }
 
     @Override
@@ -123,25 +131,39 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
             editor = getContext().getSharedPreferences("cocosoft", MODE_PRIVATE).edit();
             editor.putBoolean("isloggedin", true);
             editor.putString("username", mUserNameEdtTxt.getText().toString().trim());
+            if (mAdminCheckbox.isChecked())
+                editor.putString("usertype", "admin");
+            else
+                editor.putString("usertype", "user");
             editor.commit();
             Toast.makeText(getContext(), "Successfully Logged In", Toast.LENGTH_SHORT).show();
          /*   Intent i = new Intent(getContext(), MainActivity.class);
             startActivity(i);*/
-        getActivity().getSupportFragmentManager().popBackStack();
+            response = apiInterface.getUser(1);
+            response.enqueue(new Callback<User>() {
+                @Override
+                public void onResponse(Call<User> call, Response<User> response) {
+
+                }
+
+                @Override
+                public void onFailure(Call<User> call, Throwable t) {
+                    Log.e("LoginFragment", "=" + t.getMessage());
+                }
+            });
+            getActivity().getSupportFragmentManager().popBackStack();
         }
     }
 
     private void openFrag(int i) {
         Fragment firstFragment = null;
-        switch (i)
-        {
+        switch (i) {
             case 0:
                 firstFragment = new SettingsFragment();
                 break;
             case 1:
                 firstFragment = new SignupFragment();
                 break;
-
         }
         FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();

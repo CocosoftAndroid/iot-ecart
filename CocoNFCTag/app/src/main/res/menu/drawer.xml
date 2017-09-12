@@ -11,16 +11,7 @@
             android:icon="@drawable/ic_home"
             android:title="Home" />
     </group>
-    <group
-        android:id="@+id/grp2"
-        android:checkableBehavior="single">
 
-        <item
-            android:id="@+id/menu_ordered"
-            android:checked="false"
-            android:icon="@drawable/ic_list"
-            android:title="Ordered List" />
-    </group>
     <group
         android:id="@+id/grp3"
         android:checkableBehavior="single">
@@ -32,6 +23,38 @@
             android:title="WishList" />
     </group>
     <group
+        android:id="@+id/grp7"
+        android:checkableBehavior="single">
+
+        <item
+            android:id="@+id/menu_allusers"
+            android:checked="false"
+            android:icon="@drawable/ic_list_fav"
+            android:title="All Users" />
+    </group>
+
+    <group
+        android:id="@+id/grp4"
+        android:checkableBehavior="single">
+
+        <item
+            android:id="@+id/menu_history"
+            android:checked="false"
+            android:icon="@drawable/ic_list_fav"
+            android:title="Orders" />
+    </group>
+
+    <group
+        android:id="@+id/grp11"
+        android:checkableBehavior="single">
+
+        <item
+            android:id="@+id/menu_updateprofile"
+            android:checked="false"
+            android:icon="@drawable/ic_list_fav"
+            android:title="Update Profile" />
+    </group>
+    <group
         android:id="@+id/grp6"
         android:checkableBehavior="single">
 
@@ -39,7 +62,7 @@
             android:id="@+id/menu_edit"
             android:checked="false"
             android:icon="@drawable/ic_edit_profile"
-            android:title="Edit Profile" />
+            android:title="Profile" />
     </group>
     <group
         android:id="@+id/grp7"

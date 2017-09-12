@@ -8,14 +8,24 @@ public class UserItem {
     private String id="";
     private String userName = "";
     private String password = "";
+    private String userType = "";
 
-    public UserItem(String id,String userName, String password) {
-        this.id=id;
+    public UserItem(String id, String userName, String password, String userType) {
+        this.id = id;
         this.userName = userName;
         this.password = password;
+        this.userType = userType;
     }
 
     public UserItem() {
+    }
+
+    public String getUserType() {
+        return userType;
+    }
+
+    public void setUserType(String userType) {
+        this.userType = userType;
     }
 
     public String getId() {
